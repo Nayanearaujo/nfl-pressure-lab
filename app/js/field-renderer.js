@@ -85,7 +85,7 @@
     svg.appendChild(this.gLabels);
 
     // Halo do pass rusher mais próximo (pintado sob os jogadores).
-    this.closestHalo = el("circle", { class: "closest-halo", r: 1.7, cx: -10, cy: -10, visibility: "hidden" });
+    this.closestHalo = el("circle", { class: "closest-halo", r: 2.1, cx: -10, cy: -10, visibility: "hidden" });
     this.gLine.appendChild(this.closestHalo);
 
     // Linha de aproximação (criada uma vez, escondida até haver dados)
@@ -136,8 +136,8 @@
       const base = parseFloat(node.dataset.baseR);
       if (!isNaN(base)) node.setAttribute("r", (base * scale).toFixed(3));
     });
-    if (this.ballNode) this.ballNode.setAttribute("r", (0.55 * scale).toFixed(3));
-    if (this.closestHalo) this.closestHalo.setAttribute("r", (1.7 * scale).toFixed(3));
+    if (this.ballNode) this.ballNode.setAttribute("r", (0.7 * scale).toFixed(3));
+    if (this.closestHalo) this.closestHalo.setAttribute("r", (2.1 * scale).toFixed(3));
   };
 
   // Cria os elementos dos jogadores uma única vez (reusados a cada frame).
@@ -157,7 +157,7 @@
       else if (p.side === "offense") cls += "offense";
       else cls += "defense";
 
-      const baseR = p.isQB ? 1.25 : 1.1;
+      const baseR = p.isQB ? 1.6 : 1.4;
       const c = el("circle", { class: cls, r: baseR, cx: -10, cy: -10 });
       c.dataset.baseR = baseR;
       const title = el("title", {});
@@ -173,7 +173,7 @@
     });
 
     // bola
-    this.ballNode = el("circle", { class: "ball-marker", r: 0.55, cx: -10, cy: -10 });
+    this.ballNode = el("circle", { class: "ball-marker", r: 0.7, cx: -10, cy: -10 });
     const bt = el("title", {}); bt.textContent = "Bola"; this.ballNode.appendChild(bt);
     this.gBall.appendChild(this.ballNode);
   };

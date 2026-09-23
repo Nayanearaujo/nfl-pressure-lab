@@ -159,11 +159,11 @@ main > .chart-wrap { grid-column: 1; grid-row: 2; margin: 0; max-width: none; }
 .jersey-label {
   fill: #04121f; font-weight: 800; text-anchor: middle; dominant-baseline: central;
   pointer-events: none;
-  font-size: calc(1.6px * var(--zoom-scale, 1));
+  font-size: calc(2px * var(--zoom-scale, 1));
 }
-/* Em FULL FIELD, a alta concentração de jogadores torna os números ilegíveis;
-   escondemos os rótulos e mantemos a identificação via tooltip (hover). */
-#field:not(.pocket) .jersey-label { display: none; }
+/* Em FULL FIELD há alta concentração de jogadores; mostramos os números com
+   um leve halo claro para legibilidade e mantemos o tooltip (hover). */
+#field:not(.pocket) .jersey-label { font-size: calc(1.75px * var(--zoom-scale, 1)); }
 
 .approach-line {
   stroke: var(--c-rusher); stroke-width: 2; stroke-dasharray: 4 3;
