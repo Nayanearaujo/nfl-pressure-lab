@@ -22,7 +22,9 @@ Projeto desenvolvido com apoio do Kiro, ferramenta da AWS, utilizando especifica
 
 <br />
 
-Demonstração online: https://nayanearaujo.github.io/nfl-pressure-lab/app/index.html
+Demonstração online (GitHub Pages): https://nayanearaujo.github.io/nfl-pressure-lab/app/index.html
+
+Código e instruções de execução local: [github.com/Nayanearaujo/nfl-pressure-lab](https://github.com/Nayanearaujo/nfl-pressure-lab) (ver a seção Instalação e execução).
 
 </div>
 
@@ -31,6 +33,12 @@ Demonstração online: https://nayanearaujo.github.io/nfl-pressure-lab/app/index
 ## Apresentação
 
 O NFL Pressure Lab é uma aplicação web de engenharia de dados e visualização esportiva que reproduz a movimentação real de jogadores da NFL e analisa a aproximação entre o quarterback e os defensores encarregados do pass rush.
+
+<div align="center">
+
+<img src="docs/images/pocket-replay-fullfield.png" alt="Captura principal do replay no modo Full field, no frame 38 (pass forward detectado automaticamente, 3,2 s após o snap)" width="860" />
+
+</div>
 
 A pergunta central do projeto é: como a movimentação dos defensores influencia o espaço e o tempo disponíveis para o quarterback executar uma jogada.
 
@@ -64,19 +72,7 @@ A aplicação está funcional. Os componentes abaixo estão concluídos.
 
 Visualizações estáticas da jogada demonstrativa 2021090900 / 97 (TB x DAL). São todas a mesma jogada, em recortes e gráficos diferentes. Na aplicação, estas imagens formam a galeria "Visualizações complementares", com a explicação completa exibida ao ampliar cada imagem.
 
-Full field
-
-- O que mostra: as posições reais dos jogadores em um frame da jogada, no campo completo.
-- Como interpretar: as cores identificam funções (amarelo é o quarterback, azul é o ataque, laranja é a defesa, vermelho são os pass rushers) e o pass rusher mais próximo recebe um contorno tracejado. A distância exibida é calculada a partir das coordenadas dos jogadores.
-- Observação: no frame do lançamento, o rusher mais próximo está a cerca de 1.79 jarda do quarterback.
-
-<div align="center">
-
-![Pocket Replay no modo Full field](docs/images/pocket-replay-fullfield.png)
-
-</div>
-
-### Outros visuais
+A captura principal do modo Full field está no início deste documento. As demais visualizações estão abaixo.
 
 Pocket focus
 
@@ -250,11 +246,28 @@ Eventos e estatísticas
 
 ## Metodologia e integridade dos dados
 
+O projeto distingue três informações que não devem ser confundidas:
+
+1. Aproximação geométrica: a distância calculada entre as coordenadas do quarterback e as coordenadas do pass rusher elegível mais próximo em cada frame.
+2. Registros da PFF: hurries, hits e sacks presentes nos dados de scouting.
+3. Resultado da jogada: informação independente da distância geométrica.
+
+A distância por frame é a euclidiana, em jardas:
+
+```
+d(t) = √[ (x_QB(t) − x_R(t))² + (y_QB(t) − y_R(t))² ]
+```
+
+Aqui, R representa o pass rusher elegível mais próximo no frame t. Como a identidade de R pode mudar entre frames, a curva de menor distância não é necessariamente a trajetória de um único atleta.
+
+Outros pontos:
+
 - Identificação do quarterback e dos pass rushers a partir do arquivo de scouting da PFF, sem inferência por posição ou movimento.
-- Distância euclidiana em jardas entre o quarterback e cada pass rusher, com o mínimo por quadro registrado no JSON.
+- Apenas defensores identificados como pass rush entram no cálculo da distância.
 - Valores ausentes são tratados de forma explícita na interface, sem substituição por zero.
-- As três camadas de informação permanecem separadas em toda a interface.
+- As três camadas de informação permanecem separadas em toda a interface. A aproximação geométrica não é uma classificação oficial de pressão da PFF, e nenhuma relação de causalidade é afirmada.
 - O dataset original é propriedade de terceiros e não é redistribuído neste repositório.
+- Evolução possível (não implementada): uma taxa de aproximação, isto é, a variação da distância por unidade de tempo, poderia complementar a análise. A versão atual não calcula essa métrica.
 
 ## Dataset
 
@@ -292,17 +305,19 @@ Os testes automatizados validam o pipeline de pré-processamento, incluindo a f�
 python3 -m unittest discover -s tests
 ```
 
-## Processo de desenvolvimento
+## Desenvolvimento orientado por especificações com Kiro
 
-O projeto foi desenvolvido para o Hackathon NFL Big Data Bowl RJ (AWS, NFL e Estácio), com apoio do Kiro, ferramenta da AWS, na estruturação das especificações, na implementação e na validação.
+O projeto foi desenvolvido com apoio do Kiro, ferramenta da AWS. O Kiro foi utilizado na organização de requisitos, no design técnico, na decomposição de tarefas, no apoio à implementação e na validação, incluindo a execução dos testes.
 
-O trabalho foi organizado em etapas de requisitos, desenho técnico, tarefas, implementação e testes, conforme os arquivos de especificação presentes no repositório em `.kiro/specs/nfl-pressure-lab/`:
+As especificações ficam em `.kiro/specs/nfl-pressure-lab/`:
 
 - `requirements.md`: requisitos funcionais e não funcionais.
 - `design.md`: arquitetura, fluxo de dados, esquema dos JSON e estratégia de visualização.
-- `tasks.md`: tarefas de implementação, com o histórico do que foi concluído.
+- `tasks.md`: decomposição das tarefas de implementação, com o histórico do que foi concluído.
 
-A aplicação está publicada no GitHub Pages. O repositório é versionado com Git e hospedado no GitHub.
+Em conjunto, esses arquivos documentam os requisitos, as decisões técnicas e o acompanhamento das tarefas do projeto.
+
+A demonstração está hospedada no GitHub Pages. O repositório é versionado com Git e hospedado no GitHub.
 
 ## Licença e créditos
 
