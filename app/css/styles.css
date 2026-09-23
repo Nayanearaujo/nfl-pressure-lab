@@ -161,9 +161,15 @@ main > .chart-wrap { grid-column: 1; grid-row: 2; margin: 0; max-width: none; }
   pointer-events: none;
   font-size: calc(2px * var(--zoom-scale, 1));
 }
-/* Em FULL FIELD há alta concentração de jogadores; mostramos os números com
-   um leve halo claro para legibilidade e mantemos o tooltip (hover). */
+/* Em FULL FIELD há alta concentração de jogadores; rotulagem adaptativa
+   (em field-renderer.js) evita sobreposição. Mantemos o tooltip (hover). */
 #field:not(.pocket) .jersey-label { font-size: calc(1.75px * var(--zoom-scale, 1)); }
+/* Rótulos prioritários (QB e rusher mais próximo): contorno claro para leitura
+   garantida mesmo em aglomeração. */
+.jersey-label.priority {
+  paint-order: stroke; stroke: rgba(255,255,255,0.85);
+  stroke-width: calc(0.5px * var(--zoom-scale, 1)); font-weight: 800;
+}
 
 .approach-line {
   stroke: var(--c-rusher); stroke-width: 2; stroke-dasharray: 4 3;

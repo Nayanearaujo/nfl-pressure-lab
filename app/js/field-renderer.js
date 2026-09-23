@@ -120,6 +120,7 @@
       }
     }
     this.svg.setAttribute("viewBox", `${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
+    this.lastVb = vb;
     // Fator de zoom: 1 no full, <1 no pocket (ex.: 0.25 => 4x de zoom).
     // Os círculos/halo são desenhados em unidades de usuário (jardas); ao
     // ampliar o viewBox eles apareceriam 1/scale maiores na tela. Para manter
@@ -192,7 +193,7 @@
         if (label) {
           label.setAttribute("x", pos.x);
           label.setAttribute("y", fy(pos.y));
-          label.setAttribute("visibility", "visible");
+          // a visibilidade final é decidida em _updateLabels (adaptativo)
         }
       } else {
         node.setAttribute("visibility", "hidden");
@@ -211,6 +212,63 @@
 
     this._renderApproach(frame);
     this._applyViewBox(frame);
+    this._updateLabels(frame);
+  };
+
+  // Rotulagem adaptativa: mostra os números sem sobreposição, priorizando o
+  // QB e o pass rusher mais próximo (sempre visíveis). Os demais só aparecem
+  // se não colidirem com um rótulo já exibido. Não altera posições reais; os
+  // números ocultos continuam acessíveis por hover (elemento <title>).
+  FieldRenderer.prototype._updateLabels = function (frame) {
+    const positions = frame.positions || {};
+    const closestId = frame.closest_rusher_nflId != null ? String(frame.closest_rusher_nflId) : null;
+
+    // distância mínima entre rótulos, em unidades de campo (jardas),
+    // proporcional ao zoom para manter separação constante na tela.
+    const scale = (this.lastVb && this.lastVb.w ? this.lastVb.w : FIELD_LEN) / FIELD_LEN;
+    const minGap = 2.6 * scale; // ~raio + folga
+
+    // ordem de prioridade: QB, rusher mais próximo, depois os demais
+    const ids = [];
+    if (this.qbId && positions[this.qbId]) ids.push(this.qbId);
+    if (closestId && closestId !== this.qbId && positions[closestId]) ids.push(closestId);
+    this.playerNodes.forEach((_node, nflId) => {
+      if (nflId !== this.qbId && nflId !== closestId && positions[nflId]) ids.push(nflId);
+    });
+
+    const shown = []; // {x, y} dos rótulos já exibidos
+    ids.forEach((nflId, idx) => {
+      const label = this.labelNodes.get(nflId);
+      const pos = positions[nflId];
+      if (!label || !pos || pos.x == null) { if (label) label.setAttribute("visibility", "hidden"); return; }
+      const px = pos.x, py = fy(pos.y);
+      // QB (idx 0) e rusher mais próximo (idx 1) são sempre exibidos
+      let show = idx < 2;
+      if (!show) {
+        show = true;
+        for (let i = 0; i < shown.length; i++) {
+          const dx = shown[i].x - px, dy = shown[i].y - py;
+          if (dx * dx + dy * dy < minGap * minGap) { show = false; break; }
+        }
+      }
+      // Para os dois rótulos prioritários, se estiverem muito próximos entre si,
+      // deslocamos verticalmente (QB acima, rusher abaixo) para não colidirem.
+      // Isso move apenas o texto do rótulo, nunca o círculo/coordenada real.
+      if (idx < 2) {
+        label.classList.add("priority");
+        const off = 1.7 * scale; // deslocamento em unidades de campo
+        if (idx === 0) label.setAttribute("y", py - off);       // QB acima
+        else label.setAttribute("y", py + off);                 // rusher abaixo
+      } else {
+        label.classList.remove("priority");
+      }
+      if (show) {
+        label.setAttribute("visibility", "visible");
+        shown.push({ x: px, y: py });
+      } else {
+        label.setAttribute("visibility", "hidden");
+      }
+    });
   };
 
   // Linha QB <-> pass rusher mais próximo (somente rushers — RF6.2/P5).

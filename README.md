@@ -6,8 +6,11 @@
 
 Projeto desenvolvido para o Hackathon NFL Big Data Bowl RJ (AWS, NFL e Estácio).
 
+Projeto desenvolvido com apoio do Kiro, ferramenta da AWS, utilizando especificações técnicas, implementação e validação orientadas por requisitos.
+
 <br />
 
+![Kiro](https://img.shields.io/badge/Kiro-AWS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
@@ -154,6 +157,13 @@ Observações de leitura:
 | ![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white) | Hospedagem do repositório. |
 
 O front-end usa JavaScript puro, sem frameworks ou dependências externas. O pré-processamento usa apenas a biblioteca padrão do Python.
+
+### Ferramentas de desenvolvimento
+
+| Ferramenta | Uso no projeto |
+| :--- | :--- |
+| ![Kiro](https://img.shields.io/badge/Kiro-AWS-FF9900?style=flat&logo=amazonaws&logoColor=white) | Ferramenta da AWS usada no desenvolvimento: organização de requirements, design e tasks; apoio à implementação; e execução e validação dos testes. |
+| ![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-222222?style=flat&logo=githubpages&logoColor=white) | Hospedagem da demonstração online. |
 
 ## Arquitetura
 
