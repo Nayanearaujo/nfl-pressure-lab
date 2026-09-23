@@ -95,7 +95,7 @@
     const label = r.passResultLabel || r.passResult;
 
     let rhtml = "";
-    rhtml += `<div class="metric-row"><span class="label">Resultado do passe</span><span class="value">${label ? label : na()}</span></div>`;
+    rhtml += `<div class="metric-row"><span class="label">Resultado da jogada</span><span class="value">${label ? label : na()}</span></div>`;
     rhtml += `<div class="metric-row"><span class="label">Jardas na jogada</span><span class="value">${r.playResult != null ? r.playResult : na()}</span></div>`;
     this.refs.result.innerHTML = rhtml;
 
