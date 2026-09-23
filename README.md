@@ -8,20 +8,6 @@ Aplicação web que reproduz o tracking real da NFL e mede a aproximação entre
 
 Desenvolvida para o Hackathon NFL Big Data Bowl RJ (AWS, NFL e Estácio), com apoio do Kiro (ferramenta da AWS) em um fluxo orientado por especificações: requisitos, design e tarefas versionados junto ao código.
 
-<br />
-
-![Kiro](https://img.shields.io/badge/Kiro-AWS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
-![SVG](https://img.shields.io/badge/SVG-FFB13B?style=for-the-badge&logo=svg&logoColor=black)
-![JSON](https://img.shields.io/badge/JSON-000000?style=for-the-badge&logo=json&logoColor=white)
-![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
-![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
-
-<br />
-
 Demonstração online (GitHub Pages): https://nayanearaujo.github.io/nfl-pressure-lab/app/index.html
 
 Código e instruções de execução local: [github.com/Nayanearaujo/nfl-pressure-lab](https://github.com/Nayanearaujo/nfl-pressure-lab) (ver a seção Instalação e execução).
