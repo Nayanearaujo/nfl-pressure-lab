@@ -64,11 +64,6 @@
       const key = th.getAttribute("data-key");
       th.setAttribute("aria-sort",
         key === sortKey ? (sortDir === 1 ? "ascending" : "descending") : "none");
-      const btn = th.querySelector(".th-sort");
-      if (btn) {
-        const arrow = key === sortKey ? (sortDir === 1 ? " ▲" : " ▼") : "";
-        btn.dataset.arrow = arrow;
-      }
     });
   }
 

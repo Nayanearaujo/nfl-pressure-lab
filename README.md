@@ -68,7 +68,8 @@ A aplicação está funcional. Os componentes abaixo estão concluídos.
 | Interface web Pocket Replay 2D | Concluído |
 | Modo Pocket Focus | Concluído |
 | Gráfico temporal sincronizado | Concluído |
-| Testes automatizados | 18 aprovados |
+| Comparação entre jogadas | Concluído |
+| Testes automatizados | 21 aprovados |
 
 ## Demonstração visual
 
@@ -133,6 +134,18 @@ Cartão de resumo da jogada
 <div align="center">
 
 ![Cartão de resumo da jogada](docs/images/play-summary-card.png)
+
+</div>
+
+Comparação entre jogadas
+
+- O que mostra: a visão agregada das cinco jogadas processadas, lado a lado, em uma tabela. Cada linha traz o confronto, a menor aproximação geométrica na jogada, a aproximação no momento do lançamento, o resultado oficial do passe e a contagem de pressão registrada pela PFF (soma de hurries, hits e sacks). Diferente das imagens acima, que detalham a mesma jogada demonstrativa, esta tabela reúne as cinco jogadas.
+- Como interpretar: a tabela é ordenável; nesta captura, está ordenada pela menor distância em ordem crescente, do confronto mais apertado (PHI x ATL, 0,30 jarda) ao de pocket mais limpa (SF x DET, 4,33 jardas). As três camadas de informação seguem separadas: aproximação geométrica, pressão da PFF e resultado. Um traço na coluna de distância no lançamento indica jogada sem lançamento registrado, como nos sacks.
+- Observação: as colunas não são combinadas nem correlacionadas. A proximidade dos defensores e o resultado da jogada aparecem juntos apenas para leitura, sem afirmar relação de causalidade.
+
+<div align="center">
+
+![Comparação entre jogadas](docs/images/comparison-table.png)
 
 </div>
 
@@ -207,7 +220,8 @@ nfl-pressure-lab/
 ├── src/
 │   └── pressure_lab/
 │       ├── __init__.py
-│       └── preprocess.py          # pipeline de pré-processamento (CLI)
+│       ├── preprocess.py          # pipeline de pré-processamento (CLI)
+│       └── aggregate.py           # gera a visão agregada das jogadas (CLI)
 ├── app/
 │   ├── index.html                 # estrutura da interface
 │   ├── css/
@@ -217,9 +231,11 @@ nfl-pressure-lab/
 │   │   ├── field-renderer.js      # campo SVG, jogadores e enquadramento
 │   │   ├── playback.js            # reprodução quadro a quadro
 │   │   ├── stats-panel.js         # painel em três camadas
-│   │   └── dist-chart.js          # gráfico temporal da distância
+│   │   ├── dist-chart.js          # gráfico temporal da distância
+│   │   └── comparison.js          # tabela comparativa entre jogadas
 │   └── data/
 │       ├── plays_index.json       # índice das jogadas disponíveis
+│       ├── aggregate.json         # visão agregada das jogadas (tabela comparativa)
 │       └── plays/                 # dados processados, um JSON por jogada
 │           ├── 2021090900_97.json   # TB x DAL, passe incompleto (hurries)
 │           ├── 2021091200_231.json  # ATL x PHI, hit registrado
@@ -227,11 +243,12 @@ nfl-pressure-lab/
 │           ├── 2021091201_691.json  # PIT x BUF, sack
 │           └── 2021091204_2196.json # SF x DET, pocket limpo
 ├── tests/
-│   └── test_preprocess.py         # testes automatizados do pipeline
+│   ├── test_preprocess.py         # testes automatizados do pipeline
+│   └── test_aggregate.py          # testes da visão agregada
 ├── docs/
 │   ├── data-reference.md          # referência das colunas do dataset
 │   ├── analise-inicial.md         # análise de viabilidade
-│   └── images/                    # imagem hero e visualizações estáticas (PNG)
+│   └── images/                    # imagem hero, visualizações estáticas e tabela comparativa (PNG)
 └── .kiro/specs/nfl-pressure-lab/  # especificação (requirements, design, tasks)
 ```
 
@@ -266,6 +283,12 @@ Eventos e estatísticas
 - Painel com três blocos separados: aproximação geométrica, pressão registrada pela PFF e resultado da jogada.
 - Gráfico temporal em SVG com a evolução da distância e cursor sincronizado com o quadro.
 - Seção de metodologia e limitações.
+
+Comparação entre jogadas
+
+- Tabela agregada que reúne as cinco jogadas processadas em uma única visão, lado a lado.
+- Cada linha traz o confronto, a menor aproximação geométrica na jogada, a aproximação no lançamento, o resultado do passe e a contagem de pressão registrada pela PFF.
+- Ordenável por qualquer coluna, com ordem padrão pela menor distância. As três camadas de informação permanecem separadas, sem afirmar relação de causalidade.
 
 ## Metodologia e integridade dos dados
 
@@ -320,9 +343,17 @@ PYTHONPATH=src python3 -m pressure_lab.preprocess --play 2021090900/97
 
 O caminho do dataset pode ser configurado com a opção `--data-dir`.
 
+Regenerar a visão agregada (a partir dos JSONs já processados em `app/data/plays/`, não requer o dataset):
+
+```bash
+PYTHONPATH=src python3 -m pressure_lab.aggregate
+```
+
+Isso reescreve `app/data/aggregate.json`, que alimenta a tabela comparativa da interface.
+
 ## Testes
 
-Os testes automatizados validam o pipeline de pré-processamento, incluindo a fórmula de distância, o tratamento de valores ausentes, a detecção de eventos e a reprodutibilidade dos valores a partir das coordenadas. A suíte atual tem 18 testes, todos aprovados.
+Os testes automatizados validam o pipeline de pré-processamento, incluindo a fórmula de distância, o tratamento de valores ausentes, a detecção de eventos e a reprodutibilidade dos valores a partir das coordenadas, além da visão agregada que alimenta a tabela comparativa. A suíte atual tem 21 testes, todos aprovados.
 
 ```bash
 python3 -m unittest discover -s tests

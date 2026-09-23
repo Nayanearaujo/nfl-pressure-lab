@@ -358,8 +358,19 @@ details.methodology .body p { margin: 6px 0; }
 .comparison-table th .th-sort {
   width: 100%; text-align: left; background: none; border: 0; color: inherit;
   font: inherit; padding: 10px 14px; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
 }
-.comparison-table th .th-sort::after { content: attr(data-arrow); color: var(--accent); }
+/* Indicador de ordenação via triângulo CSS (sem depender de glifos de fonte). */
+.comparison-table th .th-sort::after {
+  content: ""; width: 0; height: 0; opacity: 0;
+  border-left: 4px solid transparent; border-right: 4px solid transparent;
+}
+.comparison-table th[aria-sort="ascending"] .th-sort::after {
+  opacity: 1; border-bottom: 5px solid var(--accent);
+}
+.comparison-table th[aria-sort="descending"] .th-sort::after {
+  opacity: 1; border-top: 5px solid var(--accent);
+}
 .comparison-table th .th-sort:hover { color: var(--text); }
 .comparison-table th[aria-sort="ascending"],
 .comparison-table th[aria-sort="descending"] { color: var(--text); }
