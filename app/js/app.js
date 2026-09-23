@@ -43,7 +43,15 @@
     chart = new DistChart($("dist-chart"));
     playback = new PlaybackController({
       onFrame: onFrame,
-      onStateChange: (playing) => { els.btnPlay.textContent = playing ? "⏸ Pause" : "▶ Play"; },
+      onStateChange: (playing) => {
+        const play = els.btnPlay.querySelector(".ic-play");
+        const pause = els.btnPlay.querySelector(".ic-pause");
+        const label = document.getElementById("btnPlayLabel");
+        if (play) play.style.display = playing ? "none" : "";
+        if (pause) pause.style.display = playing ? "" : "none";
+        if (label) label.textContent = playing ? "Pause" : "Play";
+        els.btnPlay.setAttribute("aria-label", playing ? "Pausar" : "Reproduzir");
+      },
     });
 
     wireControls();
@@ -185,7 +193,7 @@
     const all = w.concat(missing);
     if (all.length) {
       els.warnBanner.style.display = "block";
-      els.warnBanner.innerHTML = "⚠ " + all.join(" · ");
+      els.warnBanner.textContent = "Nota: " + all.join(" · ");
     } else {
       els.warnBanner.style.display = "none";
     }

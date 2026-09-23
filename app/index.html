@@ -50,9 +50,19 @@
 
       <div class="controls">
         <div class="buttons">
-          <button id="btnPrev" title="Frame anterior (←)" disabled>⏮ −1</button>
-          <button id="btnPlay" disabled>▶ Play</button>
-          <button id="btnNext" title="Próximo frame (→)" disabled>+1 ⏭</button>
+          <button id="btnPrev" class="ctrl-btn" title="Frame anterior (seta esquerda)" aria-label="Frame anterior" disabled>
+            <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path fill="currentColor" d="M4 2h2v12H4zM14 2v12l-8-6z"/></svg>
+            <span>Frame</span>
+          </button>
+          <button id="btnPlay" class="ctrl-btn" title="Reproduzir ou pausar (barra de espaço)" aria-label="Play" disabled>
+            <svg class="ic-play" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path fill="currentColor" d="M4 2l10 6-10 6z"/></svg>
+            <svg class="ic-pause" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false" style="display:none"><path fill="currentColor" d="M4 2h3v12H4zM9 2h3v12H9z"/></svg>
+            <span id="btnPlayLabel">Play</span>
+          </button>
+          <button id="btnNext" class="ctrl-btn" title="Próximo frame (seta direita)" aria-label="Próximo frame" disabled>
+            <span>Frame</span>
+            <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false"><path fill="currentColor" d="M10 2h2v12h-2zM2 2l8 6-8 6z"/></svg>
+          </button>
           <span class="spacer"></span>
           <span id="frame-readout" class="frame-readout">frame – / –</span>
           <span class="speed-select">
@@ -101,7 +111,7 @@
 
     <!-- Gráfico temporal da distância (coluna do campo, logo após os controles) -->
     <section class="chart-wrap">
-      <h2>Evolução da aproximação geométrica (QB ↔ pass rusher mais próximo)</h2>
+      <h2>Evolução da aproximação geométrica (QB e pass rusher mais próximo)</h2>
       <p class="note">Distância em jardas por frame. Linhas verticais: <span style="color:#ffd23f">snap</span> e <span style="color:#5cd68a">lançamento</span>. O cursor branco acompanha o frame atual. Sem previsões ou classificações de pressão.</p>
       <svg id="dist-chart" role="img" aria-label="Gráfico da distância ao longo do tempo"></svg>
     </section>

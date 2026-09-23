@@ -1,4 +1,4 @@
-/* dist-chart.js — gráfico SVG simples da evolução da distância QB↔pass rusher.
+/* dist-chart.js — gráfico SVG simples da evolução da distância QB - pass rusher.
  *
  * Plota geometric_min_distance_yd por frameId. Marca snap e lançamento.
  * Um cursor vertical é sincronizado com o frame atual da reprodução.
