@@ -44,6 +44,8 @@ A pergunta central do projeto é: como a movimentação dos defensores influenci
 
 A funcionalidade central é o Pocket Replay 2D, uma visão superior do campo que reproduz a jogada quadro a quadro (frame a frame) a partir de dados de rastreamento a 10 Hz. A interface destaca os pass rushers, desenha a linha entre o quarterback e o pass rusher mais próximo e exibe a distância geométrica sincronizada com o quadro atual.
 
+A aplicação inclui um seletor com cinco jogadas de cenários distintos: passe incompleto sob pressão, sack, hit registrado, pocket limpo e diferentes confrontos de times.
+
 O projeto separa de forma explícita três camadas de informação e não as combina:
 
 1. Aproximação geométrica: distância euclidiana calculada a partir das coordenadas reais (x, y).
@@ -218,13 +220,18 @@ nfl-pressure-lab/
 │   │   └── dist-chart.js          # gráfico temporal da distância
 │   └── data/
 │       ├── plays_index.json       # índice das jogadas disponíveis
-│       └── plays/
-│           └── 2021090900_97.json # dados processados de uma jogada
+│       └── plays/                 # dados processados, um JSON por jogada
+│           ├── 2021090900_97.json   # TB x DAL, passe incompleto (hurries)
+│           ├── 2021091200_231.json  # ATL x PHI, hit registrado
+│           ├── 2021091200_2631.json # PHI x ATL, sack
+│           ├── 2021091201_691.json  # PIT x BUF, sack
+│           └── 2021091204_2196.json # SF x DET, pocket limpo
 ├── tests/
 │   └── test_preprocess.py         # testes automatizados do pipeline
 ├── docs/
 │   ├── data-reference.md          # referência das colunas do dataset
-│   └── analise-inicial.md         # análise de viabilidade
+│   ├── analise-inicial.md         # análise de viabilidade
+│   └── images/                    # imagem hero e visualizações estáticas (PNG)
 └── .kiro/specs/nfl-pressure-lab/  # especificação (requirements, design, tasks)
 ```
 
