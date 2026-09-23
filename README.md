@@ -69,7 +69,8 @@ A aplicação está funcional. Os componentes abaixo estão concluídos.
 | Modo Pocket Focus | Concluído |
 | Gráfico temporal sincronizado | Concluído |
 | Comparação entre jogadas | Concluído |
-| Testes automatizados | 21 aprovados |
+| Testes automatizados (Python) | 21 aprovados |
+| Verificação funcional das jogadas (navegador) | 5 jogadas aprovadas |
 
 ## Demonstração visual
 
@@ -244,7 +245,8 @@ nfl-pressure-lab/
 │           └── 2021091204_2196.json # SF x DET, pocket limpo
 ├── tests/
 │   ├── test_preprocess.py         # testes automatizados do pipeline
-│   └── test_aggregate.py          # testes da visão agregada
+│   ├── test_aggregate.py          # testes da visão agregada
+│   └── verify_plays_browser.sh    # verificação funcional das 5 jogadas (navegador)
 ├── docs/
 │   ├── data-reference.md          # referência das colunas do dataset
 │   ├── analise-inicial.md         # análise de viabilidade
@@ -353,11 +355,21 @@ Isso reescreve `app/data/aggregate.json`, que alimenta a tabela comparativa da i
 
 ## Testes
 
-Os testes automatizados validam o pipeline de pré-processamento, incluindo a fórmula de distância, o tratamento de valores ausentes, a detecção de eventos e a reprodutibilidade dos valores a partir das coordenadas, além da visão agregada que alimenta a tabela comparativa. A suíte atual tem 21 testes, todos aprovados.
+A verificação acontece em duas camadas complementares.
+
+Testes unitários em Python (pipeline de dados). Validam o pré-processamento, incluindo a fórmula de distância, o tratamento de valores ausentes, a detecção de eventos e a reprodutibilidade dos valores a partir das coordenadas, além da visão agregada que alimenta a tabela comparativa. A suíte atual tem 21 testes, todos aprovados.
 
 ```bash
 python3 -m unittest discover -s tests
 ```
+
+Verificação funcional da interface (as cinco jogadas no navegador). Os testes Python cobrem os dados, mas não exercitam a troca entre jogadas na interface. Para isso, o script `tests/verify_plays_browser.sh` carrega cada uma das cinco jogadas pelo seletor, em um navegador headless, e confere: o status reflete a jogada carregada; o painel de resultado mostra o rótulo correto (inclusive "Sack" nas jogadas sem lançamento); a aproximação geométrica aparece em jardas; os controles ficam habilitados; o marcador de snap está presente; os sacks não têm marcador de lançamento; e não há erros de página no console durante as trocas.
+
+```bash
+tests/verify_plays_browser.sh
+```
+
+Requer `agent-browser` (Chromium headless) e `python3`. A última execução registrou 31 verificações aprovadas, 0 falhas, cobrindo as cinco jogadas — incluindo os dois sacks sem lançamento.
 
 ## Desenvolvimento orientado por especificações com Kiro
 
