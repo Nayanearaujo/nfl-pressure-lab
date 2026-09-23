@@ -4,9 +4,9 @@
 
 ### Race Against Time | Análise Tática da Pressão Defensiva
 
-Projeto desenvolvido para o Hackathon NFL Big Data Bowl RJ (AWS, NFL e Estácio).
+Aplicação web que reproduz o tracking real da NFL e mede a aproximação entre o quarterback e o pass rush, quadro a quadro.
 
-Projeto desenvolvido com apoio do Kiro, ferramenta da AWS, utilizando especificações técnicas, implementação e validação orientadas por requisitos.
+Desenvolvida para o Hackathon NFL Big Data Bowl RJ (AWS, NFL e Estácio), com apoio do Kiro (ferramenta da AWS) em um fluxo orientado por especificações: requisitos, design e tarefas versionados junto ao código.
 
 <br />
 
@@ -36,7 +36,7 @@ O NFL Pressure Lab é uma aplicação web de engenharia de dados e visualizaçã
 
 <div align="center">
 
-<img src="docs/images/pocket-replay-fullfield.png" alt="Captura principal do replay no modo Full field, no frame 38 (pass forward detectado automaticamente, 3,2 s após o snap)" width="860" />
+<img src="docs/images/hero-pocket.png" alt="Pocket focus no frame do lançamento: quarterback (12) e o pass rusher mais próximo (97) a 1,79 jarda" width="880" />
 
 </div>
 
@@ -72,17 +72,29 @@ A aplicação está funcional. Os componentes abaixo estão concluídos.
 
 Visualizações estáticas da jogada demonstrativa 2021090900 / 97 (TB x DAL). São todas a mesma jogada, em recortes e gráficos diferentes. Na aplicação, estas imagens formam a galeria "Visualizações complementares", com a explicação completa exibida ao ampliar cada imagem.
 
-A captura principal do modo Full field está no início deste documento. As demais visualizações estão abaixo.
+A imagem de abertura, no topo do documento, mostra o modo Pocket focus no frame do lançamento. As visualizações abaixo detalham a interface e a análise.
 
-Pocket focus
+Interface completa (modo Full field)
 
-- O que mostra: um enquadramento ampliado da região do quarterback, para facilitar a leitura da movimentação dos defensores próximos.
-- Como interpretar: o contorno tracejado destaca o pass rusher mais próximo no frame mostrado. O zoom altera apenas a visualização.
+- O que mostra: a interface no frame 38, com o campo inteiro, os controles de reprodução, o painel das três camadas de informação e o gráfico temporal.
+- Como interpretar: por padrão, todos os jogadores com número disponível são identificados; quando dois números ficariam sobrepostos, um deles é deslocado com uma linha-guia curta e recebe contorno para contraste sobre o gramado. Na aglomeração da linha de scrimmage, o número de cada jogador também aparece ao passar o cursor, focar pelo teclado ou tocar no marcador.
+- Observação: o frame 38 (pass forward detectado automaticamente, 3,2 s após o snap) mantém os recebedores espalhados, o que facilita a leitura do conjunto.
+
+<div align="center">
+
+![Interface completa no modo Full field](docs/images/pocket-replay-fullfield.png)
+
+</div>
+
+Pocket focus (interface completa)
+
+- O que mostra: a mesma interface no modo Pocket focus, ampliando a região do quarterback no frame do lançamento.
+- Como interpretar: o contorno tracejado destaca o pass rusher mais próximo. O zoom altera apenas a visualização.
 - Observação: o zoom não altera as coordenadas dos jogadores nem as distâncias calculadas.
 
 <div align="center">
 
-![Modo Pocket focus](docs/images/pocket-replay-pocketfocus.png)
+![Modo Pocket focus, interface completa](docs/images/pocket-replay-pocketfocus.png)
 
 </div>
 

@@ -60,3 +60,6 @@ Thumbs.db
 .idea/
 .vscode/
 *.sublime-*
+
+# geradores temporários de imagens estáticas (não fazem parte do app em runtime)
+app/_export/

@@ -174,8 +174,16 @@ main > .chart-wrap { grid-column: 1; grid-row: 2; margin: 0; max-width: none; }
   stroke: rgba(255,255,255,0.95);
   stroke-width: calc(0.55px * var(--zoom-scale, 1)); font-weight: 800;
 }
+/* Rótulos externos (deslocados sobre o gramado): texto claro com contorno
+   escuro para contraste, em vez de texto escuro sobre o verde. */
+.jersey-label.external {
+  fill: #ffffff;
+  stroke: rgba(6, 20, 12, 0.92);
+  stroke-width: calc(0.6px * var(--zoom-scale, 1));
+}
+.jersey-label.priority.external { stroke: rgba(6, 20, 12, 0.95); }
 /* Linha-guia curta entre um jogador e seu rótulo deslocado. */
-.leader-line { stroke: rgba(255,255,255,0.55); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.leader-line { stroke: rgba(255,255,255,0.7); stroke-width: 1; vector-effect: non-scaling-stroke; }
 
 .approach-line {
   stroke: var(--c-rusher); stroke-width: 2; stroke-dasharray: 4 3;

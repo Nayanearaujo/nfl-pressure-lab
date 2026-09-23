@@ -238,50 +238,55 @@
     const positions = frame.positions || {};
     const closestId = frame.closest_rusher_nflId != null ? String(frame.closest_rusher_nflId) : null;
 
-    const scale = (this.lastVb && this.lastVb.w ? this.lastVb.w : FIELD_LEN) / FIELD_LEN;
-    // "raio" ocupado por um rótulo, em unidades de campo (proporcional ao zoom).
-    // No Pocket focus há bastante espaço na tela, então usamos um limiar menor
-    // para evitar deslocamentos (e linhas-guia) desnecessários; o Full field,
-    // mais denso, usa um limiar maior para separar os números.
-    // No Pocket focus os círculos ficam grandes na tela e comportam o número
-    // dentro deles; manter os rótulos centrados (sem deslocar) é mais limpo do
-    // que puxá-los para fora com linhas-guia. No Full field, denso, deslocamos.
-    // Estratégia por modo, baseada em evidência visual:
-    // - FULL FIELD: círculos pequenos e muitos jogadores agrupados; quando dois
-    //   números ficariam colados, deslocamos um para fora com linha-guia curta.
-    //   A colisão é medida em ESPAÇO DE TELA (o número tem tamanho fixo em px),
-    //   convertida para jardas via a escala atual do viewBox.
-    // - POCKET FOCUS: os círculos ficam grandes e comportam o número; manter os
-    //   números CENTRADOS nos círculos é mais legível do que puxá-los para fora
-    //   (o deslocamento no zoom "descola" o número do seu círculo). Não deslocar.
+    // Estratégia única de rótulos, com dois comportamentos coerentes:
+    // - FULL FIELD: círculos pequenos e muitos jogadores agrupados na linha de
+    //   scrimmage. O número começa centrado; se colidiria com outro já colocado,
+    //   é deslocado para a posição livre MAIS PRÓXIMA, com uma linha-guia curta.
+    // - POCKET FOCUS: os círculos são grandes e comportam o número; mantemos os
+    //   números centrados (deslocar "descolaria" o número do círculo no zoom).
+    // A colisão é medida em ESPAÇO DE TELA (o número tem tamanho fixo em px) e
+    // convertida para jardas pela escala atual do viewBox, para ser consistente
+    // nos dois modos.
     const isPocket = this.mode === "pocket";
     const svgPxW = this.svg.getBoundingClientRect().width || 1000;
     const vbW = (this.lastVb && this.lastVb.w) ? this.lastVb.w : FIELD_LEN;
-    const ydPerPx = vbW / svgPxW;                 // jardas por pixel de tela
-    const MIN_SEP_PX = 22;                         // separação mínima na tela
-    const labelRadius = isPocket ? 0 : (MIN_SEP_PX / 2) * ydPerPx;
-    const ringStep = MIN_SEP_PX * 0.9 * ydPerPx;   // passo do deslocamento (full)
+    const ydPerPx = vbW / svgPxW;                  // jardas por pixel de tela
+    const MIN_SEP_PX = isPocket ? 0 : 26;          // separação mínima na tela
+    const labelRadius = (MIN_SEP_PX / 2) * ydPerPx;
 
-    // ordem de colocação
+    // Ordem de colocação: QB e rusher mais próximo primeiro (têm prioridade de
+    // posição), depois os demais ORDENADOS por proximidade ao QB — assim o nó
+    // mais congestionado (linha de scrimmage) é resolvido primeiro, com folga.
+    const qbPos = this.qbId ? positions[this.qbId] : null;
+    const distToQb = (nflId) => {
+      const p = positions[nflId];
+      if (!p || !qbPos) return Infinity;
+      const dx = p.x - qbPos.x, dy = p.y - qbPos.y; return dx * dx + dy * dy;
+    };
+    const others = [];
+    this.playerNodes.forEach((_n, nflId) => {
+      if (nflId !== this.qbId && nflId !== closestId && positions[nflId]) others.push(nflId);
+    });
+    others.sort((a, b) => distToQb(a) - distToQb(b));
     const ids = [];
     if (this.qbId && positions[this.qbId]) ids.push(this.qbId);
     if (closestId && closestId !== this.qbId && positions[closestId]) ids.push(closestId);
-    this.playerNodes.forEach((_n, nflId) => {
-      if (nflId !== this.qbId && nflId !== closestId && positions[nflId]) ids.push(nflId);
-    });
+    ids.push(...others);
 
     const placed = []; // {x,y} centros dos rótulos já colocados
-    const collides = (x, y) => {
+    const freeAt = (x, y) => {
       const minD = labelRadius * 2;
       for (let i = 0; i < placed.length; i++) {
         const dx = placed[i].x - x, dy = placed[i].y - y;
-        if (dx * dx + dy * dy < minD * minD) return true;
+        if (dx * dx + dy * dy < minD * minD) return false;
       }
-      return false;
+      return true;
     };
-    // 24 direções candidatas para o deslocamento externo
+    // 16 direções; procuramos a posição livre mais próxima (menor anel), para
+    // que as linhas-guia fiquem curtas e limpas.
     const dirs = [];
-    for (let a = 0; a < 24; a++) { const t = (a / 24) * 2 * Math.PI; dirs.push([Math.sin(t), -Math.cos(t)]); }
+    for (let a = 0; a < 16; a++) { const t = (a / 16) * 2 * Math.PI; dirs.push([Math.sin(t), -Math.cos(t)]); }
+    const ringStep = MIN_SEP_PX * 0.85 * ydPerPx;
 
     ids.forEach((nflId, idx) => {
       const label = this.labelNodes.get(nflId);
@@ -296,14 +301,14 @@
 
       const cx = pos.x, cy = fy(pos.y);
       let lx = cx, ly = cy, external = false;
-      if (collides(cx, cy)) {
-        // procura a primeira posição externa livre, em anéis crescentes
+      if (!isPocket && !freeAt(cx, cy)) {
+        // menor anel livre => linha-guia curta
         let found = null;
-        for (let ring = 1; ring <= 7 && !found; ring++) {
+        for (let ring = 1; ring <= 8 && !found; ring++) {
           for (let di = 0; di < dirs.length; di++) {
             const tx = cx + dirs[di][0] * ringStep * ring;
             const ty = cy + dirs[di][1] * ringStep * ring;
-            if (!collides(tx, ty)) { found = { x: tx, y: ty }; break; }
+            if (freeAt(tx, ty)) { found = { x: tx, y: ty }; break; }
           }
         }
         if (found) { lx = found.x; ly = found.y; external = true; }
@@ -312,6 +317,9 @@
       label.setAttribute("x", lx);
       label.setAttribute("y", ly);
       label.setAttribute("visibility", "visible");
+      // rótulos externos ficam sobre o gramado; marcamos com classe para dar
+      // contraste (texto claro com contorno escuro), em vez de texto escuro.
+      if (external) label.classList.add("external"); else label.classList.remove("external");
       placed.push({ x: lx, y: ly });
 
       if (external && leader) {
