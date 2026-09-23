@@ -1,104 +1,253 @@
+<div align="center">
+
 # NFL Pressure Lab
 
-> Projeto para o **Hackathon NFL Big Data Bowl RJ — AWS, NFL & Estácio**.
+### Race Against Time | Análise Tática da Pressão Defensiva
 
-## Objetivo da aplicação
+Projeto desenvolvido para o Hackathon NFL Big Data Bowl RJ (AWS, NFL e Estácio).
 
-O **NFL Pressure Lab** é uma aplicação web interativa para analisar a **pressão defensiva sobre o quarterback (QB)** usando dados reais de rastreamento (tracking) da NFL.
+<br />
 
-A pergunta central do projeto é:
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![SVG](https://img.shields.io/badge/SVG-FFB13B?style=for-the-badge&logo=svg&logoColor=black)
+![JSON](https://img.shields.io/badge/JSON-000000?style=for-the-badge&logo=json&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
 
-> *"Como a movimentação dos defensores influencia o espaço e o tempo disponíveis para o quarterback executar uma jogada?"*
+</div>
 
-A funcionalidade central é o **Pocket Replay 2D**: um campo de futebol americano visto de cima que reproduz a movimentação dos jogadores frame a frame, destacando os *pass rushers* e a **aproximação geométrica** entre o QB e o pass rusher mais próximo.
+---
 
-O projeto distingue explicitamente três camadas de informação e **nunca as funde**:
-1. **Aproximação geométrica** — distância calculada a partir das coordenadas `(x, y)` reais.
-2. **Pressão registrada pela PFF** — indicadores `pff_hit`, `pff_hurry`, `pff_sack` (avaliação proprietária da PFF).
-3. **Resultado da jogada** — `passResult` e jardas ganhas.
+## Apresentação
 
-> Nenhuma relação de causalidade é afirmada, e aproximação geométrica **não** é tratada automaticamente como pressão efetiva.
+O NFL Pressure Lab é uma aplicação web de engenharia de dados e visualização esportiva que reproduz a movimentação real de jogadores da NFL e analisa a aproximação entre o quarterback e os defensores encarregados do pass rush.
 
-## Dataset utilizado
+A pergunta central do projeto é: como a movimentação dos defensores influencia o espaço e o tempo disponíveis para o quarterback executar uma jogada.
 
-Este projeto consome o dataset do **NFL Big Data Bowl 2023** (temporada 2021, semanas 1–8):
-- 122 jogos, 8.557 jogadas, 1.679 jogadores.
-- Dados de tracking a 10 Hz (posição, velocidade, aceleração, orientação e direção por jogador e pela bola).
-- Dados de scouting da [Pro Football Focus (PFF)](https://www.pff.com/) e dados de tracking da equipe NFL Next Gen Stats.
+A funcionalidade central é o Pocket Replay 2D, uma visão superior do campo que reproduz a jogada quadro a quadro (frame a frame) a partir de dados de rastreamento a 10 Hz. A interface destaca os pass rushers, desenha a linha entre o quarterback e o pass rusher mais próximo e exibe a distância geométrica sincronizada com o quadro atual.
 
-O dataset é propriedade de terceiros e **não é redistribuído** por este repositório.
+O projeto separa de forma explícita três camadas de informação e não as combina:
 
-**Dataset oficial:** https://github.com/ThompsonJamesBliss/nfl-big-data-bowl-regional-event-data
+1. Aproximação geométrica: distância euclidiana calculada a partir das coordenadas reais (x, y).
+2. Pressão registrada pela PFF: indicadores de hit, hurry e sack, avaliados pela Pro Football Focus.
+3. Resultado da jogada: resultado do passe e jardas obtidas.
 
-Documentação detalhada das colunas e da análise de viabilidade está em [`docs/`](docs/):
-- [`docs/data-reference.md`](docs/data-reference.md) — referência completa das colunas dos CSVs.
-- [`docs/analise-inicial.md`](docs/analise-inicial.md) — análise inicial de viabilidade.
+A aproximação geométrica não é apresentada como medida oficial de pressão, e nenhuma relação de causalidade é afirmada.
 
-## Arquitetura planejada
+## Status do projeto
 
-> ⚠️ Arquitetura **planejada** — ainda não implementada.
+A aplicação está funcional. Os componentes abaixo estão concluídos.
 
-Arquitetura em duas fases desacopladas, sem backend em runtime:
+| Componente | Situação |
+| :--- | :--- |
+| Referência do dataset | Concluído |
+| Análise de viabilidade | Concluído |
+| Especificação técnica | Concluído |
+| Estrutura do projeto | Concluído |
+| Pré-processamento Python | Concluído |
+| Interface web Pocket Replay 2D | Concluído |
+| Modo Pocket Focus | Concluído |
+| Gráfico temporal sincronizado | Concluído |
+| Testes automatizados | 18 aprovados |
 
-1. **Pré-processamento (Python, offline):** um script lê os CSVs originais do dataset e gera artefatos **JSON leves** — um por jogada — contendo apenas os dados necessários (frames, jogadores, eventos, distâncias pré-computadas, metadados).
-2. **Interface (navegador):** HTML + CSS + JavaScript (vanilla), com o campo e a movimentação renderizados em **SVG**, atualizados por frame. O navegador consome apenas os JSONs processados — **nunca** os CSVs brutos de tracking (~826 MB).
+## Demonstração visual
 
-O caminho para o dataset é **configurável** no script de pré-processamento. O padrão de desenvolvimento local aponta para:
+Interface do Pocket Replay 2D no modo Full field, exibindo a jogada 2021090900 / 97 (TB x DAL) no momento do lançamento. O campo mostra todos os jogadores em suas coordenadas reais, o painel lateral separa as três camadas de informação e o indicador exibe a distância atual entre o quarterback e o pass rusher mais próximo.
+
+<div align="center">
+
+![Pocket Replay no modo Full field](docs/images/pocket-replay-fullfield.png)
+
+</div>
+
+### Outros visuais
+
+Modo Pocket focus
+
+Enquadramento ampliado da região do quarterback, que acompanha sua movimentação ao longo da jogada. O pass rusher mais próximo recebe um contorno tracejado, e os números das camisas ficam legíveis.
+
+<div align="center">
+
+![Modo Pocket focus](docs/images/pocket-replay-pocketfocus.png)
+
+</div>
+
+Linha do tempo da distância
+
+Evolução da distância entre o quarterback e o pass rusher mais próximo, quadro a quadro. As linhas verticais marcam o snap e o lançamento, e o ponto vermelho indica a menor distância observada na jogada.
+
+<div align="center">
+
+![Linha do tempo da distância](docs/images/distance-timeline.png)
+
+</div>
+
+Trajetórias do QB e do rusher mais próximo
+
+Trajetória do quarterback e do pass rusher mais próximo por quadro, sobre um recorte da região da pocket. Os marcadores indicam as posições no snap e no lançamento.
+
+<div align="center">
+
+![Trajetórias do QB e do rusher mais próximo](docs/images/qb-rusher-paths.png)
+
+</div>
+
+Cartão de resumo da jogada
+
+Resumo com os principais números da jogada, mantendo separadas a aproximação geométrica, a pressão registrada pela PFF e o resultado.
+
+<div align="center">
+
+![Cartão de resumo da jogada](docs/images/play-summary-card.png)
+
+</div>
+
+## Stack tecnológica
+
+| Tecnologia | Papel no projeto |
+| :--- | :--- |
+| ![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white) | Pré-processamento dos CSVs e validação automatizada dos dados. |
+| ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black) | Reprodução quadro a quadro, controles e interatividade. |
+| ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white) | Estrutura da interface. |
+| ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white) | Apresentação, tema escuro e layout responsivo. |
+| ![SVG](https://img.shields.io/badge/SVG-FFB13B?style=flat&logo=svg&logoColor=black) | Visualização do campo, jogadores, linha de aproximação e gráfico temporal. |
+| ![JSON](https://img.shields.io/badge/JSON-000000?style=flat&logo=json&logoColor=white) | Armazenamento dos dados processados por jogada. |
+| ![Git](https://img.shields.io/badge/Git-F05032?style=flat&logo=git&logoColor=white) | Controle de versão. |
+| ![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white) | Hospedagem do repositório. |
+
+O front-end usa JavaScript puro, sem frameworks ou dependências externas. O pré-processamento usa apenas a biblioteca padrão do Python.
+
+## Arquitetura
+
+A arquitetura tem duas fases desacopladas, sem back-end em tempo de execução.
 
 ```
-../nfl-big-data-bowl-regional-event-data/data/
+CSVs originais (dataset NFL)
+        |
+        v
+[ Python: pré-processamento ]  ->  JSON por jogada (leve)
+        |
+        v
+[ Navegador: HTML + CSS + JS + SVG ]  ->  Pocket Replay 2D
 ```
 
-Assim, o dataset original permanece em sua pasta e **não é duplicado** neste projeto.
+1. Pré-processamento (Python, offline): lê os CSVs originais do dataset e gera um JSON leve por jogada, contendo frames, jogadores, eventos, distâncias pré-computadas e metadados. O caminho do dataset é configurável, com valor padrão apontando para uma pasta irmã do projeto.
+2. Interface (navegador): consome apenas os JSONs processados. O campo e a movimentação são renderizados em SVG e atualizados por quadro. O navegador nunca carrega os CSVs brutos de rastreamento.
 
-Detalhes completos em [`.kiro/specs/nfl-pressure-lab/design.md`](.kiro/specs/nfl-pressure-lab/design.md).
+A distância entre o quarterback e o pass rusher mais próximo considera exclusivamente os defensores identificados como pass rush no scouting da PFF. O cálculo é feito no pré-processamento em Python e armazenado no JSON, de forma reproduzível a partir das coordenadas.
 
-### Estrutura de diretórios
+## Estrutura do projeto
 
 ```
 nfl-pressure-lab/
 ├── README.md
 ├── .gitignore
-├── docs/                       # documentação (referência de dados + análise)
-├── .kiro/specs/nfl-pressure-lab/   # especificação (requirements, design, tasks)
-├── src/                        # código de pré-processamento em Python (a implementar)
-├── app/                        # interface web (HTML/CSS/JS/SVG) (a implementar)
-│   └── data/                   # JSONs processados por jogada (gerados)
-├── tests/                      # testes (a implementar)
-└── outputs/                    # artefatos gerados/relatórios (a implementar)
+├── src/
+│   └── pressure_lab/
+│       ├── __init__.py
+│       └── preprocess.py          # pipeline de pré-processamento (CLI)
+├── app/
+│   ├── index.html                 # estrutura da interface
+│   ├── css/
+│   │   └── styles.css             # tema escuro e layout responsivo
+│   ├── js/
+│   │   ├── app.js                 # orquestração, seletor e controles
+│   │   ├── field-renderer.js      # campo SVG, jogadores e enquadramento
+│   │   ├── playback.js            # reprodução quadro a quadro
+│   │   ├── stats-panel.js         # painel em três camadas
+│   │   └── dist-chart.js          # gráfico temporal da distância
+│   └── data/
+│       ├── plays_index.json       # índice das jogadas disponíveis
+│       └── plays/
+│           └── 2021090900_97.json # dados processados de uma jogada
+├── tests/
+│   └── test_preprocess.py         # testes automatizados do pipeline
+├── docs/
+│   ├── data-reference.md          # referência das colunas do dataset
+│   └── analise-inicial.md         # análise de viabilidade
+└── .kiro/specs/nfl-pressure-lab/  # especificação (requirements, design, tasks)
 ```
 
-## Funcionalidades previstas
+## Funcionalidades
 
-> ⚠️ As funcionalidades abaixo estão **previstas / especificadas**, e **ainda não foram implementadas**.
+Visualização do campo
 
-- Seleção de jogada a partir de um índice.
-- Campo SVG com QB, ataque, defesa (pass rushers destacados) e bola.
-- Reprodução frame a frame com play/pause, avançar, retroceder e scrub na timeline.
-- Identificação dos pass rushers a partir do `pffScoutingData.csv`.
-- Cálculo e exibição da aproximação geométrica entre o QB e o pass rusher mais próximo.
-- Marcação dos eventos de snap, lançamento e encerramento da jogada, quando disponíveis.
-- Painel de estatísticas em três camadas separadas (contexto, pressão PFF, resultado).
+- Campo em SVG com proporção real (120 por 53.3 jardas), linhas de jarda, numeração e end zones.
+- Renderização de quarterback, jogadores de ataque, jogadores de defesa, pass rushers, pass rusher mais próximo e bola, com diferenciação visual e legenda.
+- Correspondência direta entre as coordenadas do rastreamento e a posição exibida.
+
+Reprodução
+
+- Play, pause, avançar um quadro, retroceder um quadro e slider de navegação.
+- Controle de velocidade e indicador de tempo decorrido desde o snap.
+- Uso exclusivo da sequência real de quadros, sem quadros intermediários gerados.
+
+Zoom tático
+
+- Modo Full Field, com a visão completa do campo.
+- Modo Pocket Focus, que amplia a região do quarterback e acompanha sua movimentação, preservando a proporção do campo e as coordenadas reais.
+
+Análise de aproximação
+
+- Linha entre o quarterback e o pass rusher mais próximo.
+- Distância atual apresentada em jardas, fora da região de maior concentração de jogadores, sincronizada com o quadro.
+- Métrica calculada apenas com defensores identificados como pass rush.
+
+Eventos e estatísticas
+
+- Marcação de snap, lançamento e encerramento na linha do tempo, quando presentes no dado.
+- Painel com três blocos separados: aproximação geométrica, pressão registrada pela PFF e resultado da jogada.
+- Gráfico temporal em SVG com a evolução da distância e cursor sincronizado com o quadro.
 - Seção de metodologia e limitações.
 
-A lista completa, com critérios de aceitação verificáveis, está em [`.kiro/specs/nfl-pressure-lab/requirements.md`](.kiro/specs/nfl-pressure-lab/requirements.md).
+## Metodologia e integridade dos dados
 
-## Status atual do desenvolvimento
+- Identificação do quarterback e dos pass rushers a partir do arquivo de scouting da PFF, sem inferência por posição ou movimento.
+- Distância euclidiana em jardas entre o quarterback e cada pass rusher, com o mínimo por quadro registrado no JSON.
+- Valores ausentes são tratados de forma explícita na interface, sem substituição por zero.
+- As três camadas de informação permanecem separadas em toda a interface.
+- O dataset original é propriedade de terceiros e não é redistribuído neste repositório.
 
-**Fase atual: organização e especificação (pré-implementação).**
+## Dataset
 
-| Item | Status |
-|------|--------|
-| Referência do dataset (`docs/data-reference.md`) | ✅ Concluído |
-| Análise de viabilidade (`docs/analise-inicial.md`) | ✅ Concluído |
-| Especificação — requirements / design / tasks | ✅ Concluído |
-| Estrutura do projeto independente | ✅ Concluído |
-| Pré-processamento Python (`src/`) | ⬜ Não iniciado |
-| Interface web / Pocket Replay 2D (`app/`) | ⬜ Não iniciado |
-| Testes (`tests/`) | ⬜ Não iniciado |
+O projeto utiliza o NFL Big Data Bowl 2023 (temporada 2021, semanas 1 a 8), com dados de rastreamento a 10 Hz da NFL Next Gen Stats e dados de scouting da Pro Football Focus.
 
-Nenhum código de aplicação foi implementado até o momento. O próximo passo previsto é executar as tarefas descritas em [`.kiro/specs/nfl-pressure-lab/tasks.md`](.kiro/specs/nfl-pressure-lab/tasks.md), começando pelo MVP com uma jogada real.
+Dataset oficial: https://github.com/ThompsonJamesBliss/nfl-big-data-bowl-regional-event-data
+
+A referência das colunas está em [docs/data-reference.md](docs/data-reference.md) e a análise de viabilidade em [docs/analise-inicial.md](docs/analise-inicial.md).
 
 ## Instalação e execução
 
-> ⚠️ Instruções a serem detalhadas quando a implementação começar (ver `tasks.md`, T4.5). O projeto foi planejado para rodar localmente com passos mínimos (pré-processamento em Python + servidor estático simples).
+Pré-requisitos: Python 3.9 ou superior. Não há dependências externas.
+
+Executar a interface localmente:
+
+```bash
+cd app
+python3 -m http.server 8000
+```
+
+Depois, abra `http://localhost:8000/index.html` no navegador. A aplicação já inclui o JSON de demonstração da jogada, então funciona sem processamento adicional.
+
+Regenerar os dados de uma jogada (opcional, requer o dataset em uma pasta irmã):
+
+```bash
+PYTHONPATH=src python3 -m pressure_lab.preprocess --play 2021090900/97
+```
+
+O caminho do dataset pode ser configurado com a opção `--data-dir`.
+
+## Testes
+
+Os testes automatizados validam o pipeline de pré-processamento, incluindo a fórmula de distância, o tratamento de valores ausentes, a detecção de eventos e a reprodutibilidade dos valores a partir das coordenadas. A suíte atual tem 18 testes, todos aprovados.
+
+```bash
+python3 -m unittest discover -s tests
+```
+
+## Licença e créditos
+
+Os dados de rastreamento e de scouting pertencem à NFL e à Pro Football Focus e estão sujeitos aos termos do NFL Big Data Bowl. Este repositório contém apenas o código da aplicação e um JSON de demonstração derivado de uma jogada.
