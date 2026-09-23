@@ -126,8 +126,8 @@ Cartão de resumo da jogada
 
 Comparação entre jogadas
 
-- O que mostra: a visão agregada das cinco jogadas processadas, lado a lado, em uma tabela. Cada linha traz o confronto, a menor aproximação geométrica na jogada, a aproximação no momento do lançamento, o resultado oficial do passe e a contagem de pressão registrada pela PFF (soma de hurries, hits e sacks). Diferente das imagens acima, que detalham a mesma jogada demonstrativa, esta tabela reúne as cinco jogadas.
-- Como interpretar: a tabela é ordenável; nesta captura, está ordenada pela menor distância em ordem crescente, do confronto mais apertado (PHI x ATL, 0,30 jarda) ao de pocket mais limpa (SF x DET, 4,33 jardas). As três camadas de informação seguem separadas: aproximação geométrica, pressão da PFF e resultado. Um traço na coluna de distância no lançamento indica jogada sem lançamento registrado, como nos sacks.
+- O que mostra: a visão agregada das cinco jogadas processadas, lado a lado, em uma tabela. Cada linha traz o confronto, a menor aproximação geométrica na jogada, a aproximação no momento do lançamento, o resultado oficial do passe e a coluna Registros PFF, que é a soma de hurries mais hits mais sacks registrados pela PFF (uma contagem de registros, não um índice oficial de intensidade da pressão). Diferente das imagens acima, que detalham a mesma jogada demonstrativa, esta tabela reúne as cinco jogadas.
+- Como interpretar: a tabela é ordenável; nesta captura, está ordenada pela menor distância em ordem crescente, do confronto mais apertado (PHI x ATL, 0,30 jarda) ao de pocket mais limpa (SF x DET, 4,33 jardas). As três camadas de informação seguem separadas: aproximação geométrica, registros da PFF e resultado. Um traço na coluna de distância no lançamento indica jogada sem lançamento registrado, como nos sacks.
 - Observação: as colunas não são combinadas nem correlacionadas. A proximidade dos defensores e o resultado da jogada aparecem juntos apenas para leitura, sem afirmar relação de causalidade.
 
 <div align="center">
@@ -142,6 +142,7 @@ Valores extraídos diretamente do JSON processado da jogada 2021090900 / 97 (TB 
 
 - Snap no frame 6 e lançamento no frame 40.
 - Aproximação geométrica no snap (frame 6): 5.78 jardas.
+- Frame 38: 2.31 jardas, com evento de pass forward detectado automaticamente (`autoevent_passforward`). É o frame usado na captura Full field da galeria.
 - Aproximação geométrica no lançamento (frame 40): 1.79 jarda.
 - Menor aproximação observada na jogada: 1.11 jarda, no frame 43, que ocorre após o lançamento.
 - Pressão registrada pela PFF: 4 hurries, 0 hits, 0 sacks.
@@ -275,7 +276,7 @@ Eventos e estatísticas
 Comparação entre jogadas
 
 - Tabela agregada que reúne as cinco jogadas processadas em uma única visão, lado a lado.
-- Cada linha traz o confronto, a menor aproximação geométrica na jogada, a aproximação no lançamento, o resultado do passe e a contagem de pressão registrada pela PFF.
+- Cada linha traz o confronto, a menor aproximação geométrica na jogada, a aproximação no lançamento, o resultado do passe e a coluna Registros PFF (soma de hurries, hits e sacks; contagem de registros, não índice de intensidade).
 - Ordenável por qualquer coluna, com ordem padrão pela menor distância. As três camadas de informação permanecem separadas, sem afirmar relação de causalidade.
 
 ## Metodologia e integridade dos dados
@@ -321,7 +322,7 @@ Executar a interface localmente, servindo a partir da raiz do repositório:
 python3 -m http.server 8000
 ```
 
-Depois, abra `http://localhost:8000/app/index.html` no navegador. Servir a partir da raiz garante que a galeria de visualizações complementares (em `docs/images/`) carregue corretamente, com os mesmos caminhos relativos usados no GitHub Pages. A aplicação já inclui o JSON de demonstração da jogada, então funciona sem processamento adicional.
+Depois, abra `http://localhost:8000/app/index.html` no navegador. Servir a partir da raiz garante que a galeria de visualizações complementares (em `docs/images/`) carregue corretamente, com os mesmos caminhos relativos usados no GitHub Pages. A aplicação já inclui os JSONs de demonstração das cinco jogadas, então funciona sem processamento adicional.
 
 Regenerar os dados de uma jogada (opcional, requer o dataset em uma pasta irmã):
 
@@ -349,13 +350,26 @@ Testes unitários em Python (pipeline de dados). Validam o pré-processamento, i
 python3 -m unittest discover -s tests
 ```
 
-Verificação funcional da interface (as cinco jogadas no navegador). Os testes Python cobrem os dados, mas não exercitam a troca entre jogadas na interface. Para isso, o script `tests/verify_plays_browser.sh` carrega cada uma das cinco jogadas pelo seletor, em um navegador headless, e confere: o status reflete a jogada carregada; o painel de resultado mostra o rótulo correto (inclusive "Sack" nas jogadas sem lançamento); a aproximação geométrica aparece em jardas; os controles ficam habilitados; o marcador de snap está presente; os sacks não têm marcador de lançamento; e não há erros de página no console durante as trocas.
+Verificação funcional da interface (as cinco jogadas no navegador). Os testes Python cobrem os dados, mas não exercitam a interface. Para isso, o script `tests/verify_plays_browser.sh` carrega cada uma das cinco jogadas pelo seletor, em um navegador headless, e confere comportamento observável, não apenas a existência de elementos:
+
+- o status reflete a jogada carregada;
+- o painel de resultado mostra o rótulo correto, inclusive "Sack" nas jogadas sem lançamento;
+- a aproximação geométrica aparece em jardas;
+- os controles (play/slider) ficam habilitados;
+- o marcador de snap está presente na timeline e os sacks não têm marcador de lançamento;
+- o gráfico de distância é renderizado com uma curva que muda entre jogadas, e o rótulo de lançamento aparece só nas jogadas com passe;
+- ao clicar em Play a reprodução avança de fato os frames e o botão passa a Pause; ao pausar, o avanço para;
+- alternar entre Full field e Pocket focus preserva o frame atual;
+- ao chegar ao último frame, um novo Play reinicia a reprodução;
+- não há erros de página no console durante essas operações.
+
+Os critérios usam esperas e comparações relativas (o índice avançou, ou ficou estável), sem depender de um tempo exato de máquina.
 
 ```bash
 tests/verify_plays_browser.sh
 ```
 
-Requer `agent-browser` (Chromium headless) e `python3`. A última execução registrou 31 verificações aprovadas, 0 falhas, cobrindo as cinco jogadas — incluindo os dois sacks sem lançamento.
+Requer `agent-browser` (Chromium headless) e `python3`; se o `agent-browser` não estiver disponível, o script informa a limitação e não declara aprovação. A última execução local registrou 67 verificações aprovadas, 0 falhas, cobrindo as cinco jogadas — incluindo os dois sacks sem lançamento.
 
 ## Desenvolvimento orientado por especificações com Kiro
 
@@ -373,4 +387,4 @@ A demonstração está hospedada no GitHub Pages. O repositório é versionado c
 
 ## Licença e créditos
 
-Os dados de rastreamento e de scouting pertencem à NFL e à Pro Football Focus e estão sujeitos aos termos do NFL Big Data Bowl. Este repositório contém apenas o código da aplicação e um JSON de demonstração derivado de uma jogada.
+Os dados de rastreamento e de scouting pertencem à NFL e à Pro Football Focus e estão sujeitos aos termos do NFL Big Data Bowl. Este repositório contém apenas o código da aplicação e os JSONs de demonstração derivados de cinco jogadas.

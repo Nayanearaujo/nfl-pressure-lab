@@ -158,7 +158,7 @@
   <!-- Comparação entre jogadas (visão agregada — Fase adicional) -->
   <section class="comparison-wrap" aria-labelledby="comparison-title">
     <h2 id="comparison-title">Comparação entre jogadas</h2>
-    <p class="note">Visão agregada das jogadas processadas, lado a lado. Cada linha resume uma jogada em três camadas separadas: aproximação geométrica (menor distância e distância no lançamento), pressão registrada pela PFF e resultado oficial. Clique nos cabeçalhos para ordenar. Nenhuma relação causal é afirmada.</p>
+    <p class="note">Visão agregada das jogadas processadas, lado a lado. Cada linha resume uma jogada em três camadas separadas: aproximação geométrica (menor distância e distância no lançamento), registros da PFF e resultado oficial. Clique nos cabeçalhos para ordenar. Nenhuma relação causal é afirmada.</p>
     <div class="comparison-table-wrap">
       <table id="comparison-table" class="comparison-table">
         <thead>
@@ -167,13 +167,13 @@
             <th data-key="minDistanceYd" data-num="1" scope="col"><button type="button" class="th-sort">Menor distância (yd)</button></th>
             <th data-key="distanceAtThrowYd" data-num="1" scope="col"><button type="button" class="th-sort">Distância no lançamento (yd)</button></th>
             <th data-key="passResultLabel" scope="col"><button type="button" class="th-sort">Resultado</button></th>
-            <th data-key="pffTotal" data-num="1" scope="col"><button type="button" class="th-sort">Pressão PFF (h+ht+s)</button></th>
+            <th data-key="pffTotal" data-num="1" scope="col"><button type="button" class="th-sort">Registros PFF</button></th>
           </tr>
         </thead>
         <tbody id="comparison-body"></tbody>
       </table>
     </div>
-    <p class="note" id="comparison-note">Pressão PFF = hurries + hits + sacks. Uma distância no lançamento vazia indica jogada sem lançamento registrado (por exemplo, sack).</p>
+    <p class="note" id="comparison-note">A coluna Registros PFF traz a soma de hurries mais hits mais sacks registrados pela PFF para aquela jogada. Essa soma apenas conta quantos registros existem; não é um índice oficial de intensidade da pressão nem uma medida derivada da distância. Uma distância no lançamento vazia indica jogada sem lançamento registrado (por exemplo, sack).</p>
   </section>
 
   <!-- Lightbox para ampliar imagens da galeria -->
