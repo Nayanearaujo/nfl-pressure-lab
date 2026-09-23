@@ -13,6 +13,58 @@
       "possessionTeam": "TB",
       "quarter": 1,
       "yardsToGo": 2
+    },
+    {
+      "defensiveTeam": "PHI",
+      "description": "(12:08) (Shotgun) M.Ryan pass short middle to C.Ridley to PHI 16 for 12 yards (M.Epps) [J.Hargrave].",
+      "down": 3,
+      "file": "plays/2021091200_231.json",
+      "gameId": 2021091200,
+      "id": "2021091200_231",
+      "passResult": "C",
+      "playId": 231,
+      "possessionTeam": "ATL",
+      "quarter": 1,
+      "yardsToGo": 7
+    },
+    {
+      "defensiveTeam": "ATL",
+      "description": "(13:35) (Shotgun) J.Hurts sacked at PHI 45 for -3 yards (J.Tuioti-Mariner).",
+      "down": 3,
+      "file": "plays/2021091200_2631.json",
+      "gameId": 2021091200,
+      "id": "2021091200_2631",
+      "passResult": "S",
+      "playId": 2631,
+      "possessionTeam": "PHI",
+      "quarter": 3,
+      "yardsToGo": 5
+    },
+    {
+      "defensiveTeam": "BUF",
+      "description": "(4:26) (Shotgun) B.Roethlisberger sacked at PIT 20 for -6 yards (M.Addison). FUMBLES (M.Addison) [M.Addison], recovered by PIT-C.Okorafor at PIT 25. PENALTY on PIT-C.Claypool, Unsportsmanlike Conduct, 12 yards, enforced between downs.",
+      "down": 3,
+      "file": "plays/2021091201_691.json",
+      "gameId": 2021091201,
+      "id": "2021091201_691",
+      "passResult": "S",
+      "playId": 691,
+      "possessionTeam": "PIT",
+      "quarter": 1,
+      "yardsToGo": 4
+    },
+    {
+      "defensiveTeam": "DET",
+      "description": "(13:36) (Shotgun) J.Garoppolo pass short middle to G.Kittle to DET 36 for 8 yards (T.Walker).",
+      "down": 2,
+      "file": "plays/2021091204_2196.json",
+      "gameId": 2021091204,
+      "id": "2021091204_2196",
+      "passResult": "C",
+      "playId": 2196,
+      "possessionTeam": "SF",
+      "quarter": 3,
+      "yardsToGo": 8
     }
   ]
 }
