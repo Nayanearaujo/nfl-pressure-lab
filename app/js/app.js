@@ -112,7 +112,15 @@
 
       els.slider.min = 0;
       els.slider.max = doc.frames.length - 1;
-      els.slider.value = 0;
+      // Abre no frame do snap (quando existir), para que os indicadores iniciais
+      // reflitam o início da jogada (tempo 0.0 s) em vez do pré-snap.
+      let startIdx = 0;
+      if (snapFrameId != null) {
+        const i = doc.frames.findIndex((f) => f.frameId === snapFrameId);
+        if (i >= 0) startIdx = i;
+      }
+      els.slider.value = startIdx;
+      playback.seek(startIdx);
       setControlsEnabled(true);
 
       const nRush = doc.players.filter((p) => p.isPassRusher).length;
