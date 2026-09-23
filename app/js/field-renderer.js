@@ -74,18 +74,21 @@
       svg.appendChild(t);
     });
 
-    // Grupos (ordem de pintura): linha de aproximação -> jogadores -> bola -> labels
+    // Grupos (ordem de pintura): linha de aproximação -> jogadores -> bola ->
+    // linhas-guia dos rótulos -> labels
     this.gLine = el("g", {});
     this.gPlayers = el("g", {});
     this.gBall = el("g", {});
+    this.gLeaders = el("g", {});
     this.gLabels = el("g", {});
     svg.appendChild(this.gLine);
     svg.appendChild(this.gPlayers);
     svg.appendChild(this.gBall);
+    svg.appendChild(this.gLeaders);
     svg.appendChild(this.gLabels);
 
     // Halo do pass rusher mais próximo (pintado sob os jogadores).
-    this.closestHalo = el("circle", { class: "closest-halo", r: 2.1, cx: -10, cy: -10, visibility: "hidden" });
+    this.closestHalo = el("circle", { class: "closest-halo", r: 2.5, cx: -10, cy: -10, visibility: "hidden" });
     this.gLine.appendChild(this.closestHalo);
 
     // Linha de aproximação (criada uma vez, escondida até haver dados)
@@ -99,7 +102,10 @@
   // Alterna o modo de enquadramento sem alterar o frame atual (Fase 2).
   FieldRenderer.prototype.setMode = function (mode) {
     this.mode = mode === "pocket" ? "pocket" : "full";
-    if (this.lastFrame) this._applyViewBox(this.lastFrame);
+    if (this.lastFrame) {
+      this._applyViewBox(this.lastFrame);
+      this._updateLabels(this.lastFrame); // recalcula rótulos/linhas-guia p/ o novo modo
+    }
   };
 
   // Calcula e aplica o viewBox conforme o modo, centrando no QB no pocket.
@@ -138,7 +144,7 @@
       if (!isNaN(base)) node.setAttribute("r", (base * scale).toFixed(3));
     });
     if (this.ballNode) this.ballNode.setAttribute("r", (0.7 * scale).toFixed(3));
-    if (this.closestHalo) this.closestHalo.setAttribute("r", (2.1 * scale).toFixed(3));
+    if (this.closestHalo) this.closestHalo.setAttribute("r", (2.5 * scale).toFixed(3));
   };
 
   // Cria os elementos dos jogadores uma única vez (reusados a cada frame).
@@ -146,8 +152,10 @@
     // limpa estado anterior (troca de jogada)
     this.playerNodes.forEach((n) => n.remove());
     this.labelNodes.forEach((n) => n.remove());
+    if (this.leaderNodes) this.leaderNodes.forEach((n) => n.remove());
     this.playerNodes.clear();
     this.labelNodes.clear();
+    this.leaderNodes = new Map();
     if (this.ballNode) { this.ballNode.remove(); this.ballNode = null; }
 
     this.qbId = null;
@@ -158,7 +166,7 @@
       else if (p.side === "offense") cls += "offense";
       else cls += "defense";
 
-      const baseR = p.isQB ? 1.6 : 1.4;
+      const baseR = p.isQB ? 1.9 : 1.65;
       const c = el("circle", { class: cls, r: baseR, cx: -10, cy: -10 });
       c.dataset.baseR = baseR;
       const title = el("title", {});
@@ -171,6 +179,12 @@
       label.textContent = p.jerseyNumber != null ? String(p.jerseyNumber) : "";
       this.gLabels.appendChild(label);
       this.labelNodes.set(String(p.nflId), label);
+
+      // linha-guia curta usada quando o rótulo precisa ficar fora do círculo
+      const leader = el("line", { class: "leader-line", visibility: "hidden" });
+      this.gLeaders.appendChild(leader);
+      this.leaderNodes = this.leaderNodes || new Map();
+      this.leaderNodes.set(String(p.nflId), leader);
     });
 
     // bola
@@ -215,58 +229,90 @@
     this._updateLabels(frame);
   };
 
-  // Rotulagem adaptativa: mostra os números sem sobreposição, priorizando o
-  // QB e o pass rusher mais próximo (sempre visíveis). Os demais só aparecem
-  // se não colidirem com um rótulo já exibido. Não altera posições reais; os
-  // números ocultos continuam acessíveis por hover (elemento <title>).
+  // Rotulagem: TODOS os jogadores com número disponível são identificados.
+  // O rótulo começa centrado no círculo; se colidir com um rótulo já colocado,
+  // é deslocado para fora (com uma linha-guia curta), em vez de ser ocultado.
+  // Nunca move a posição real do jogador (cx/cy). Prioridade de colocação:
+  // QB e pass rusher mais próximo primeiro, para garantirem a melhor posição.
   FieldRenderer.prototype._updateLabels = function (frame) {
     const positions = frame.positions || {};
     const closestId = frame.closest_rusher_nflId != null ? String(frame.closest_rusher_nflId) : null;
 
-    // distância mínima entre rótulos, em unidades de campo (jardas),
-    // proporcional ao zoom para manter separação constante na tela.
     const scale = (this.lastVb && this.lastVb.w ? this.lastVb.w : FIELD_LEN) / FIELD_LEN;
-    const minGap = 2.6 * scale; // ~raio + folga
+    // "raio" ocupado por um rótulo, em unidades de campo (proporcional ao zoom).
+    // No Pocket focus há bastante espaço na tela, então usamos um limiar menor
+    // para evitar deslocamentos (e linhas-guia) desnecessários; o Full field,
+    // mais denso, usa um limiar maior para separar os números.
+    // No Pocket focus os círculos ficam grandes na tela e comportam o número
+    // dentro deles; manter os rótulos centrados (sem deslocar) é mais limpo do
+    // que puxá-los para fora com linhas-guia. No Full field, denso, deslocamos.
+    const isPocket = this.mode === "pocket";
+    // Raio de colisão do rótulo, em unidades de campo (proporcional ao zoom).
+    // No Pocket focus não deslocamos: os círculos são grandes e os números
+    // ficam centrados neles. Aplicamos o deslocamento apenas no Full field.
+    const labelRadius = (isPocket ? 0 : 1.25) * scale;
+    const ringStep = 2.2 * scale; // passo do deslocamento externo (só full)
 
-    // ordem de prioridade: QB, rusher mais próximo, depois os demais
+    // ordem de colocação
     const ids = [];
     if (this.qbId && positions[this.qbId]) ids.push(this.qbId);
     if (closestId && closestId !== this.qbId && positions[closestId]) ids.push(closestId);
-    this.playerNodes.forEach((_node, nflId) => {
+    this.playerNodes.forEach((_n, nflId) => {
       if (nflId !== this.qbId && nflId !== closestId && positions[nflId]) ids.push(nflId);
     });
 
-    const shown = []; // {x, y} dos rótulos já exibidos
+    const placed = []; // {x,y} centros dos rótulos já colocados
+    const collides = (x, y) => {
+      const minD = labelRadius * 2;
+      for (let i = 0; i < placed.length; i++) {
+        const dx = placed[i].x - x, dy = placed[i].y - y;
+        if (dx * dx + dy * dy < minD * minD) return true;
+      }
+      return false;
+    };
+    // 24 direções candidatas para o deslocamento externo
+    const dirs = [];
+    for (let a = 0; a < 24; a++) { const t = (a / 24) * 2 * Math.PI; dirs.push([Math.sin(t), -Math.cos(t)]); }
+
     ids.forEach((nflId, idx) => {
       const label = this.labelNodes.get(nflId);
+      const leader = this.leaderNodes.get(nflId);
       const pos = positions[nflId];
-      if (!label || !pos || pos.x == null) { if (label) label.setAttribute("visibility", "hidden"); return; }
-      const px = pos.x, py = fy(pos.y);
-      // QB (idx 0) e rusher mais próximo (idx 1) são sempre exibidos
-      let show = idx < 2;
-      if (!show) {
-        show = true;
-        for (let i = 0; i < shown.length; i++) {
-          const dx = shown[i].x - px, dy = shown[i].y - py;
-          if (dx * dx + dy * dy < minGap * minGap) { show = false; break; }
+      if (!label || !pos || pos.x == null) {
+        if (label) label.setAttribute("visibility", "hidden");
+        if (leader) leader.setAttribute("visibility", "hidden");
+        return;
+      }
+      if (idx < 2) label.classList.add("priority"); else label.classList.remove("priority");
+
+      const cx = pos.x, cy = fy(pos.y);
+      let lx = cx, ly = cy, external = false;
+      if (collides(cx, cy)) {
+        // procura a primeira posição externa livre, em anéis crescentes
+        let found = null;
+        for (let ring = 1; ring <= 7 && !found; ring++) {
+          for (let di = 0; di < dirs.length; di++) {
+            const tx = cx + dirs[di][0] * ringStep * ring;
+            const ty = cy + dirs[di][1] * ringStep * ring;
+            if (!collides(tx, ty)) { found = { x: tx, y: ty }; break; }
+          }
         }
+        if (found) { lx = found.x; ly = found.y; external = true; }
       }
-      // Para os dois rótulos prioritários, se estiverem muito próximos entre si,
-      // deslocamos verticalmente (QB acima, rusher abaixo) para não colidirem.
-      // Isso move apenas o texto do rótulo, nunca o círculo/coordenada real.
-      if (idx < 2) {
-        label.classList.add("priority");
-        const off = 1.7 * scale; // deslocamento em unidades de campo
-        if (idx === 0) label.setAttribute("y", py - off);       // QB acima
-        else label.setAttribute("y", py + off);                 // rusher abaixo
-      } else {
-        label.classList.remove("priority");
-      }
-      if (show) {
-        label.setAttribute("visibility", "visible");
-        shown.push({ x: px, y: py });
-      } else {
-        label.setAttribute("visibility", "hidden");
+
+      label.setAttribute("x", lx);
+      label.setAttribute("y", ly);
+      label.setAttribute("visibility", "visible");
+      placed.push({ x: lx, y: ly });
+
+      if (external && leader) {
+        leader.setAttribute("x1", cx);
+        leader.setAttribute("y1", cy);
+        leader.setAttribute("x2", lx);
+        leader.setAttribute("y2", ly);
+        leader.setAttribute("visibility", "visible");
+      } else if (leader) {
+        leader.setAttribute("visibility", "hidden");
       }
     });
   };

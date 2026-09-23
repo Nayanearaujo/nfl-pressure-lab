@@ -159,17 +159,19 @@ main > .chart-wrap { grid-column: 1; grid-row: 2; margin: 0; max-width: none; }
 .jersey-label {
   fill: #04121f; font-weight: 800; text-anchor: middle; dominant-baseline: central;
   pointer-events: none;
-  font-size: calc(2px * var(--zoom-scale, 1));
+  font-size: calc(2.1px * var(--zoom-scale, 1));
 }
-/* Em FULL FIELD há alta concentração de jogadores; rotulagem adaptativa
-   (em field-renderer.js) evita sobreposição. Mantemos o tooltip (hover). */
-#field:not(.pocket) .jersey-label { font-size: calc(1.75px * var(--zoom-scale, 1)); }
+/* Todos os jogadores com número são identificados; quando o rótulo não cabe
+   junto ao círculo, ele é deslocado para fora com uma linha-guia. */
+#field:not(.pocket) .jersey-label { font-size: calc(1.9px * var(--zoom-scale, 1)); }
 /* Rótulos prioritários (QB e rusher mais próximo): contorno claro para leitura
    garantida mesmo em aglomeração. */
 .jersey-label.priority {
-  paint-order: stroke; stroke: rgba(255,255,255,0.85);
-  stroke-width: calc(0.5px * var(--zoom-scale, 1)); font-weight: 800;
+  paint-order: stroke; stroke: rgba(255,255,255,0.9);
+  stroke-width: calc(0.55px * var(--zoom-scale, 1)); font-weight: 800;
 }
+/* Linha-guia curta entre um jogador e seu rótulo deslocado. */
+.leader-line { stroke: rgba(255,255,255,0.55); stroke-width: 1; vector-effect: non-scaling-stroke; }
 
 .approach-line {
   stroke: var(--c-rusher); stroke-width: 2; stroke-dasharray: 4 3;
