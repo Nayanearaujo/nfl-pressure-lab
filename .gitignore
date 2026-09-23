@@ -1,0 +1,62 @@
+# ==============================================================
+# NFL Pressure Lab — .gitignore
+# ==============================================================
+
+# --- Dados brutos da NFL (dataset de terceiros, NÃO redistribuir) ---
+# O dataset oficial vive fora deste repositório, em:
+#   ../nfl-big-data-bowl-regional-event-data/data/
+# As regras abaixo evitam commitar dados brutos caso sejam
+# copiados acidentalmente para dentro do projeto.
+# Obs.: usamos "/data/" (ancorado na raiz) para NÃO afetar "app/data/",
+# que guarda os JSONs processados e deve ser versionado.
+/data/
+**/tracking/
+tracking_*.csv
+games.csv
+players.csv
+plays.csv
+pffScoutingData.csv
+*.csv.gz
+
+# IMPORTANTE: NÃO ignoramos os pequenos JSONs processados usados
+# pela aplicação (ex.: app/data/plays/*.json, app/data/plays_index.json).
+# Eles são necessários para a demonstração e devem ser versionados.
+
+# --- Ambientes virtuais Python ---
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+# --- Cache do Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# --- Credenciais e variáveis de ambiente ---
+.env
+.env.*
+*.pem
+*.key
+credentials.json
+secrets.*
+
+# --- Arquivos temporários e de sistema ---
+*.tmp
+*.temp
+*.log
+*.bak
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# --- Editores / IDEs ---
+.idea/
+.vscode/
+*.sublime-*
