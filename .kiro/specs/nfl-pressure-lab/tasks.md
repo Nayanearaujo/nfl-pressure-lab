@@ -159,12 +159,12 @@ Convenção: `[ ]` pendente · cada tarefa lista **Entrega**, **Verificação** 
   - Requisitos: RF2.5, RF2.6.
   - **Nota:** rótulo do número da camisa desenhado no círculo; hover mostra os detalhes completos.
 
-- [ ] **T4.5 — Finalizar README (instalação, execução, adicionar jogadas)**
-  - Entrega: passos completos: dependências, `python preprocess.py …`, `python -m http.server`, e "como adicionar uma jogada".
-  - Verificação: seguir o README do zero produz o app rodando.
+- [x] **T4.5 — Finalizar README (instalação, execução, adicionar jogadas)**
+  - Entrega: README funcional publicado no GitHub, com Apresentação, Status do projeto, Demonstração visual (5 imagens), Stack tecnológica, Arquitetura, Estrutura, Funcionalidades, Metodologia, Dataset, instruções reais de instalação/execução (`python3 -m http.server` e regeneração via `pressure_lab.preprocess`), Testes e uma seção de Resultados em texto.
+  - Verificação: README publicado em `origin/main`; instruções de execução testadas (app serve por HTTP, JSONs carregam, 18 testes aprovados).
   - Requisitos: RNF7.
 
-> **✅ Fase 2 concluída** — Pocket Replay 2D funcional (`app/index.html` + `app/css/styles.css` + `app/js/{field-renderer,playback,stats-panel,dist-chart,app}.js`). Reprodução, controles, aproximação geométrica, marcadores de evento, painel em 3 camadas, gráfico temporal e metodologia implementados e verificados em navegador headless (desktop + mobile). HTML/CSS/JS separados; consome apenas o JSON pré-processado. Pendentes: T3.1 (lote de jogadas), T4.5 (README de execução). O pipeline Python da Fase 1 não foi alterado (18 testes seguem passando).
+> **✅ Fase 2 concluída** — Pocket Replay 2D funcional (`app/index.html` + `app/css/styles.css` + `app/js/{field-renderer,playback,stats-panel,dist-chart,app}.js`). Reprodução, controles, aproximação geométrica, marcadores de evento, painel em 3 camadas, gráfico temporal e metodologia implementados e verificados em navegador headless (desktop + mobile). HTML/CSS/JS separados; consome apenas o JSON pré-processado. Documentação (README + imagens) concluída (T4.5). Pendente: T3.1 (lote de jogadas) — o índice publicado contém apenas a jogada demonstrativa `2021090900/97`. O pipeline Python da Fase 1 não foi alterado (18 testes seguem passando).
 
 ---
 

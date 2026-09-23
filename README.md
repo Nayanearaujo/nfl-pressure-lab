@@ -77,7 +77,7 @@ Enquadramento ampliado da região do quarterback, que acompanha sua movimentaç�
 
 Linha do tempo da distância
 
-Evolução da distância entre o quarterback e o pass rusher mais próximo, quadro a quadro. As linhas verticais marcam o snap e o lançamento, e o ponto vermelho indica a menor distância observada na jogada.
+Evolução da distância entre o quarterback e o pass rusher mais próximo, quadro a quadro. As linhas verticais marcam o snap (frame 6) e o lançamento (frame 40). O ponto vermelho indica a menor distância observada na jogada, 1.11 jarda no frame 43, posterior ao lançamento.
 
 <div align="center">
 
@@ -85,13 +85,13 @@ Evolução da distância entre o quarterback e o pass rusher mais próximo, quad
 
 </div>
 
-Trajetórias do QB e do rusher mais próximo
+Posição do pass rusher mais próximo por frame
 
-Trajetória do quarterback e do pass rusher mais próximo por quadro, sobre um recorte da região da pocket. Os marcadores indicam as posições no snap e no lançamento.
+O quarterback aparece com trajetória contínua (linha amarela). Para a defesa, o gráfico mostra a posição do pass rusher mais próximo em cada frame. Como o defensor mais próximo muda ao longo da jogada, a linha é interrompida sempre que o identificador do defensor muda, e cada trecho é colorido pelo defensor correspondente. Portanto, os trechos coloridos não representam a trajetória de um único jogador. Os marcadores indicam o snap e o lançamento.
 
 <div align="center">
 
-![Trajetórias do QB e do rusher mais próximo](docs/images/qb-rusher-paths.png)
+![Posição do pass rusher mais próximo por frame](docs/images/qb-rusher-paths.png)
 
 </div>
 
@@ -104,6 +104,23 @@ Resumo com os principais números da jogada, mantendo separadas a aproximação 
 ![Cartão de resumo da jogada](docs/images/play-summary-card.png)
 
 </div>
+
+## Resultados da jogada de demonstração
+
+Valores extraídos diretamente do JSON processado da jogada 2021090900 / 97 (TB x DAL).
+
+- Snap no frame 6 e lançamento no frame 40.
+- Aproximação geométrica no snap (frame 6): 5.78 jardas.
+- Aproximação geométrica no lançamento (frame 40): 1.79 jarda.
+- Menor aproximação observada na jogada: 1.11 jarda, no frame 43, que ocorre após o lançamento.
+- Pressão registrada pela PFF: 4 hurries, 0 hits, 0 sacks.
+- Resultado do passe: incompleto.
+
+Observações de leitura:
+
+- A distância de 1.79 jarda corresponde ao momento do lançamento (frame 40). A distância de 1.11 jarda corresponde ao frame 43, posterior ao lançamento, e não representa a distância no momento da decisão de lançar.
+- A menor distância ao quarterback em cada frame é calculada entre os pass rushers identificados naquele frame. O defensor mais próximo pode mudar ao longo da jogada. Nesta jogada, o defensor mais próximo é, em frames diferentes, Carlos Watkins, Micah Parsons, Demarcus Lawrence e Osa Odighizuwa.
+- Estes números descrevem a aproximação geométrica e a pressão avaliada pela PFF de forma separada. Não se afirma que a aproximação dos defensores causou o passe incompleto.
 
 ## Stack tecnológica
 
