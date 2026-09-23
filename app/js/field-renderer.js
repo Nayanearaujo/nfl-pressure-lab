@@ -246,12 +246,21 @@
     // No Pocket focus os círculos ficam grandes na tela e comportam o número
     // dentro deles; manter os rótulos centrados (sem deslocar) é mais limpo do
     // que puxá-los para fora com linhas-guia. No Full field, denso, deslocamos.
+    // Estratégia por modo, baseada em evidência visual:
+    // - FULL FIELD: círculos pequenos e muitos jogadores agrupados; quando dois
+    //   números ficariam colados, deslocamos um para fora com linha-guia curta.
+    //   A colisão é medida em ESPAÇO DE TELA (o número tem tamanho fixo em px),
+    //   convertida para jardas via a escala atual do viewBox.
+    // - POCKET FOCUS: os círculos ficam grandes e comportam o número; manter os
+    //   números CENTRADOS nos círculos é mais legível do que puxá-los para fora
+    //   (o deslocamento no zoom "descola" o número do seu círculo). Não deslocar.
     const isPocket = this.mode === "pocket";
-    // Raio de colisão do rótulo, em unidades de campo (proporcional ao zoom).
-    // No Pocket focus não deslocamos: os círculos são grandes e os números
-    // ficam centrados neles. Aplicamos o deslocamento apenas no Full field.
-    const labelRadius = (isPocket ? 0 : 1.25) * scale;
-    const ringStep = 2.2 * scale; // passo do deslocamento externo (só full)
+    const svgPxW = this.svg.getBoundingClientRect().width || 1000;
+    const vbW = (this.lastVb && this.lastVb.w) ? this.lastVb.w : FIELD_LEN;
+    const ydPerPx = vbW / svgPxW;                 // jardas por pixel de tela
+    const MIN_SEP_PX = 22;                         // separação mínima na tela
+    const labelRadius = isPocket ? 0 : (MIN_SEP_PX / 2) * ydPerPx;
+    const ringStep = MIN_SEP_PX * 0.9 * ydPerPx;   // passo do deslocamento (full)
 
     // ordem de colocação
     const ids = [];

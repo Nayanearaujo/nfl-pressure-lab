@@ -159,15 +159,19 @@ main > .chart-wrap { grid-column: 1; grid-row: 2; margin: 0; max-width: none; }
 .jersey-label {
   fill: #04121f; font-weight: 800; text-anchor: middle; dominant-baseline: central;
   pointer-events: none;
-  font-size: calc(2.1px * var(--zoom-scale, 1));
+  /* leve contorno claro em todos os números melhora a leitura quando dois
+     rótulos ficam próximos, sem adicionar uma placa atrás do texto. */
+  paint-order: stroke; stroke: rgba(255,255,255,0.55);
+  stroke-width: calc(0.35px * var(--zoom-scale, 1));
+  font-size: calc(1.9px * var(--zoom-scale, 1));
 }
-/* Todos os jogadores com número são identificados; quando o rótulo não cabe
-   junto ao círculo, ele é deslocado para fora com uma linha-guia. */
+/* No Full field, os números ficam um pouco menores (campo denso, muitos
+   jogadores agrupados); quando colidem, são deslocados com linha-guia. */
 #field:not(.pocket) .jersey-label { font-size: calc(1.9px * var(--zoom-scale, 1)); }
-/* Rótulos prioritários (QB e rusher mais próximo): contorno claro para leitura
-   garantida mesmo em aglomeração. */
+/* Rótulos prioritários (QB e rusher mais próximo): contorno claro mais forte
+   para leitura garantida mesmo em aglomeração. */
 .jersey-label.priority {
-  paint-order: stroke; stroke: rgba(255,255,255,0.9);
+  stroke: rgba(255,255,255,0.95);
   stroke-width: calc(0.55px * var(--zoom-scale, 1)); font-weight: 800;
 }
 /* Linha-guia curta entre um jogador e seu rótulo deslocado. */
