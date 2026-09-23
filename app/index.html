@@ -155,6 +155,27 @@
     </div>
   </section>
 
+  <!-- Comparação entre jogadas (visão agregada — Fase adicional) -->
+  <section class="comparison-wrap" aria-labelledby="comparison-title">
+    <h2 id="comparison-title">Comparação entre jogadas</h2>
+    <p class="note">Visão agregada das jogadas processadas, lado a lado. Cada linha resume uma jogada em três camadas separadas: aproximação geométrica (menor distância e distância no lançamento), pressão registrada pela PFF e resultado oficial. Clique nos cabeçalhos para ordenar. Nenhuma relação causal é afirmada.</p>
+    <div class="comparison-table-wrap">
+      <table id="comparison-table" class="comparison-table">
+        <thead>
+          <tr>
+            <th data-key="matchup" scope="col"><button type="button" class="th-sort">Confronto</button></th>
+            <th data-key="minDistanceYd" data-num="1" scope="col"><button type="button" class="th-sort">Menor distância (yd)</button></th>
+            <th data-key="distanceAtThrowYd" data-num="1" scope="col"><button type="button" class="th-sort">Distância no lançamento (yd)</button></th>
+            <th data-key="passResultLabel" scope="col"><button type="button" class="th-sort">Resultado</button></th>
+            <th data-key="pffTotal" data-num="1" scope="col"><button type="button" class="th-sort">Pressão PFF (h+ht+s)</button></th>
+          </tr>
+        </thead>
+        <tbody id="comparison-body"></tbody>
+      </table>
+    </div>
+    <p class="note" id="comparison-note">Pressão PFF = hurries + hits + sacks. Uma distância no lançamento vazia indica jogada sem lançamento registrado (por exemplo, sack).</p>
+  </section>
+
   <!-- Lightbox para ampliar imagens da galeria -->
   <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Imagem ampliada" hidden>
     <button id="lightbox-close" class="lightbox-close" aria-label="Fechar">&times;</button>
@@ -184,6 +205,7 @@
   <script src="js/stats-panel.js"></script>
   <script src="js/dist-chart.js"></script>
   <script src="js/gallery.js"></script>
+  <script src="js/comparison.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

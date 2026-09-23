@@ -1,0 +1,76 @@
+{
+  "note": "Resumo por jogada derivado dos JSONs já processados. Três camadas separadas: aproximacao geometrica, pressao PFF e resultado. Nenhuma relacao causal e afirmada.",
+  "playCount": 5,
+  "plays": [
+    {
+      "defensiveTeam": "ATL",
+      "distanceAtThrowYd": null,
+      "id": "2021091200_2631",
+      "matchup": "PHI x ATL",
+      "minDistanceYd": 0.3,
+      "passResult": "S",
+      "passResultLabel": "Sack",
+      "pffHits": 0,
+      "pffHurries": 1,
+      "pffSacks": 1,
+      "pffTotal": 2,
+      "possessionTeam": "PHI"
+    },
+    {
+      "defensiveTeam": "BUF",
+      "distanceAtThrowYd": null,
+      "id": "2021091201_691",
+      "matchup": "PIT x BUF",
+      "minDistanceYd": 0.72,
+      "passResult": "S",
+      "passResultLabel": "Sack",
+      "pffHits": 0,
+      "pffHurries": 0,
+      "pffSacks": 1,
+      "pffTotal": 1,
+      "possessionTeam": "PIT"
+    },
+    {
+      "defensiveTeam": "DAL",
+      "distanceAtThrowYd": 1.79,
+      "id": "2021090900_97",
+      "matchup": "TB x DAL",
+      "minDistanceYd": 1.11,
+      "passResult": "I",
+      "passResultLabel": "Incompleto",
+      "pffHits": 0,
+      "pffHurries": 4,
+      "pffSacks": 0,
+      "pffTotal": 4,
+      "possessionTeam": "TB"
+    },
+    {
+      "defensiveTeam": "PHI",
+      "distanceAtThrowYd": 1.77,
+      "id": "2021091200_231",
+      "matchup": "ATL x PHI",
+      "minDistanceYd": 1.29,
+      "passResult": "C",
+      "passResultLabel": "Completo",
+      "pffHits": 1,
+      "pffHurries": 1,
+      "pffSacks": 0,
+      "pffTotal": 2,
+      "possessionTeam": "ATL"
+    },
+    {
+      "defensiveTeam": "DET",
+      "distanceAtThrowYd": 4.36,
+      "id": "2021091204_2196",
+      "matchup": "SF x DET",
+      "minDistanceYd": 4.33,
+      "passResult": "C",
+      "passResultLabel": "Completo",
+      "pffHits": 0,
+      "pffHurries": 0,
+      "pffSacks": 0,
+      "pffTotal": 0,
+      "possessionTeam": "SF"
+    }
+  ]
+}
