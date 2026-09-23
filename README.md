@@ -369,7 +369,7 @@ Os critérios usam esperas e comparações relativas (o índice avançou, ou fic
 tests/verify_plays_browser.sh
 ```
 
-Requer `agent-browser` (Chromium headless) e `python3`; se o `agent-browser` não estiver disponível, o script informa a limitação e não declara aprovação. A última execução local registrou 67 verificações aprovadas, 0 falhas, cobrindo as cinco jogadas — incluindo os dois sacks sem lançamento.
+Requer `agent-browser` (Chromium headless) e `python3`; se o `agent-browser` não estiver disponível, o script informa a limitação e não declara aprovação. A última execução local passou em todas as verificações, sem falhas. A contagem é de 13 tipos de checagem reaplicados a cada uma das cinco jogadas, mais duas checagens globais (seletor com cinco opções e ausência de erros de console), totalizando 67 verificações — não são 67 comportamentos independentes, e sim os mesmos 13 comportamentos confirmados em cada jogada.
 
 ## Desenvolvimento orientado por especificações com Kiro
 
