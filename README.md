@@ -17,6 +17,10 @@ Projeto desenvolvido para o Hackathon NFL Big Data Bowl RJ (AWS, NFL e Estácio)
 ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
 ![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
 
+<br />
+
+Demonstração online: https://nayanearaujo.github.io/nfl-pressure-lab/app/index.html
+
 </div>
 
 ---
@@ -240,14 +244,13 @@ A referência das colunas está em [docs/data-reference.md](docs/data-reference.
 
 Pré-requisitos: Python 3.9 ou superior. Não há dependências externas.
 
-Executar a interface localmente:
+Executar a interface localmente, servindo a partir da raiz do repositório:
 
 ```bash
-cd app
 python3 -m http.server 8000
 ```
 
-Depois, abra `http://localhost:8000/index.html` no navegador. A aplicação já inclui o JSON de demonstração da jogada, então funciona sem processamento adicional.
+Depois, abra `http://localhost:8000/app/index.html` no navegador. Servir a partir da raiz garante que a galeria de visualizações complementares (em `docs/images/`) carregue corretamente, com os mesmos caminhos relativos usados no GitHub Pages. A aplicação já inclui o JSON de demonstração da jogada, então funciona sem processamento adicional.
 
 Regenerar os dados de uma jogada (opcional, requer o dataset em uma pasta irmã):
 
@@ -264,6 +267,18 @@ Os testes automatizados validam o pipeline de pré-processamento, incluindo a f�
 ```bash
 python3 -m unittest discover -s tests
 ```
+
+## Processo de desenvolvimento
+
+O projeto foi desenvolvido para o Hackathon NFL Big Data Bowl RJ (AWS, NFL e Estácio), com apoio do Kiro, ferramenta da AWS, na estruturação das especificações, na implementação e na validação.
+
+O trabalho foi organizado em etapas de requisitos, desenho técnico, tarefas, implementação e testes, conforme os arquivos de especificação presentes no repositório em `.kiro/specs/nfl-pressure-lab/`:
+
+- `requirements.md`: requisitos funcionais e não funcionais.
+- `design.md`: arquitetura, fluxo de dados, esquema dos JSON e estratégia de visualização.
+- `tasks.md`: tarefas de implementação, com o histórico do que foi concluído.
+
+A aplicação está publicada no GitHub Pages. O repositório é versionado com Git e hospedado no GitHub.
 
 ## Licença e créditos
 

@@ -11,8 +11,10 @@
   // Coordenadas do gráfico. Margens maiores para acomodar rótulos dos eixos
   // sem cortes; a proporção é preservada (não usamos preserveAspectRatio=none,
   // que distorcia o texto).
-  const W = 760, H = 240;
-  const M = { top: 16, right: 20, bottom: 44, left: 58 };
+  // M.top reserva uma faixa acima da área de plotagem para os rótulos de
+  // evento (Snap / Lançamento), evitando sobreposição com a curva.
+  const W = 760, H = 248;
+  const M = { top: 30, right: 20, bottom: 44, left: 58 };
 
   function el(name, attrs) {
     const n = document.createElementNS(SVGNS, name);
@@ -82,19 +84,23 @@
     ylab.textContent = "distância (yd)";
     this.svg.appendChild(ylab);
 
-    // Marcadores de evento (linhas verticais) com rótulo legível no topo
-    const evLabel = (x, text, cls, anchor) => {
-      const t = el("text", { class: "chart-evlabel " + cls, x: x + (anchor === "end" ? -4 : 4), y: M.top + 11, "text-anchor": anchor });
-      t.textContent = text;
-      this.svg.appendChild(t);
-    };
+    // Marcadores de evento: linha vertical restrita à área de plotagem e o
+    // rótulo posicionado na faixa reservada ACIMA do gráfico (y < M.top),
+    // de modo que nunca cruze a curva azul nem a própria linha vertical.
+    const labelY = M.top - 8; // dentro da faixa reservada, acima da plotagem
     ["snap", "throw"].forEach((key) => {
       const ev = doc.events && doc.events[key];
       if (ev && ev.frame != null) {
         const x = xOf(ev.frame);
+        // linha vertical só na área de plotagem
         this.svg.appendChild(el("line", { class: "chart-evline " + key, x1: x, y1: M.top, x2: x, y2: H - M.bottom }));
-        const nearRight = x > W - 120;
-        evLabel(x, (key === "snap" ? "Snap" : "Lançamento") + " (f" + ev.frame + ")", key, nearRight ? "end" : "start");
+        // rótulo na faixa superior; ancora para dentro se estiver perto das bordas
+        let anchor = "middle";
+        if (x < M.left + 40) anchor = "start";
+        else if (x > W - M.right - 40) anchor = "end";
+        const t = el("text", { class: "chart-evlabel " + key, x: x, y: labelY, "text-anchor": anchor });
+        t.textContent = (key === "snap" ? "Snap" : "Lançamento") + " (f" + ev.frame + ")";
+        this.svg.appendChild(t);
       }
     });
 

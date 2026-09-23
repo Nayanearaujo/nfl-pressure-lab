@@ -261,6 +261,39 @@ main > .chart-wrap { grid-column: 1; grid-row: 2; margin: 0; max-width: none; }
 .chart-evlabel.snap { fill: #ffd23f; }
 .chart-evlabel.throw { fill: #5cd68a; }
 
+/* ---------- Galeria de visualizações complementares ---------- */
+.gallery-wrap { max-width: 1500px; margin: 8px auto 0; padding: 4px 20px 0; }
+.gallery-wrap h2 { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.8px; margin: 0 0 4px; }
+.gallery-wrap .note { margin-bottom: 12px; }
+.gallery {
+  display: grid; gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+.gcard {
+  margin: 0; background: var(--bg-panel); border: 1px solid var(--border);
+  border-radius: 10px; overflow: hidden; cursor: pointer; transition: border-color 0.15s;
+}
+.gcard:hover, .gcard:focus-within { border-color: var(--accent); }
+.gcard img { width: 100%; height: 130px; object-fit: cover; display: block; background: #0f4d2a; }
+.gcard figcaption { padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; }
+.gcard figcaption strong { font-size: 0.82rem; }
+.gcard figcaption span { font-size: 0.72rem; color: var(--text-dim); }
+
+/* Lightbox */
+.lightbox {
+  position: fixed; inset: 0; background: rgba(4,8,12,0.9);
+  display: flex; align-items: center; justify-content: center; flex-direction: column;
+  z-index: 100; padding: 24px;
+}
+.lightbox[hidden] { display: none; }
+.lightbox img { max-width: 94vw; max-height: 82vh; border-radius: 8px; border: 1px solid var(--border); }
+.lightbox-caption { color: var(--text-dim); font-size: 0.85rem; margin-top: 12px; text-align: center; max-width: 800px; }
+.lightbox-close {
+  position: absolute; top: 16px; right: 20px; font-size: 1.8rem; line-height: 1;
+  background: transparent; border: none; color: var(--text); cursor: pointer; padding: 4px 10px;
+}
+.lightbox-close:hover { color: var(--accent); }
+
 /* ---------- Rodapé / metodologia ---------- */
 footer { margin: 8px 20px 30px; max-width: 1500px; }
 details.methodology {

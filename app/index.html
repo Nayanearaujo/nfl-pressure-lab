@@ -107,6 +107,41 @@
     </section>
   </main>
 
+  <!-- Galeria estática (abaixo da análise principal) -->
+  <section class="gallery-wrap" aria-labelledby="gallery-title">
+    <h2 id="gallery-title">Visualizações complementares</h2>
+    <p class="note">Imagens estáticas da mesma jogada demonstrativa (2021090900 / 97). Não são jogadas diferentes. O gráfico de distância abaixo é uma versão estática do gráfico interativo apresentado acima. Clique em uma miniatura para ampliar.</p>
+    <div class="gallery" id="gallery">
+      <figure class="gcard" data-src="../docs/images/pocket-replay-fullfield.png">
+        <img loading="lazy" src="../docs/images/pocket-replay-fullfield.png" alt="Pocket Replay no modo Full field" />
+        <figcaption><strong>Full field</strong><span>Visão completa do campo no momento do lançamento.</span></figcaption>
+      </figure>
+      <figure class="gcard" data-src="../docs/images/pocket-replay-pocketfocus.png">
+        <img loading="lazy" src="../docs/images/pocket-replay-pocketfocus.png" alt="Pocket Replay no modo Pocket focus" />
+        <figcaption><strong>Pocket focus</strong><span>Recorte ampliado da região do quarterback.</span></figcaption>
+      </figure>
+      <figure class="gcard" data-src="../docs/images/distance-timeline.png">
+        <img loading="lazy" src="../docs/images/distance-timeline.png" alt="Linha do tempo da distância" />
+        <figcaption><strong>Linha do tempo da distância</strong><span>Versão estática do gráfico interativo acima.</span></figcaption>
+      </figure>
+      <figure class="gcard" data-src="../docs/images/qb-rusher-paths.png">
+        <img loading="lazy" src="../docs/images/qb-rusher-paths.png" alt="Posição do pass rusher mais próximo por frame" />
+        <figcaption><strong>Posição do rusher mais próximo</strong><span>Trecho por defensor; a linha quebra quando muda o defensor.</span></figcaption>
+      </figure>
+      <figure class="gcard" data-src="../docs/images/play-summary-card.png">
+        <img loading="lazy" src="../docs/images/play-summary-card.png" alt="Cartão de resumo da jogada" />
+        <figcaption><strong>Resumo da jogada</strong><span>Principais números, com as três camadas separadas.</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Lightbox para ampliar imagens da galeria -->
+  <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Imagem ampliada" hidden>
+    <button id="lightbox-close" class="lightbox-close" aria-label="Fechar">&times;</button>
+    <img id="lightbox-img" src="" alt="" />
+    <div id="lightbox-caption" class="lightbox-caption"></div>
+  </div>
+
   <footer>
     <details class="methodology">
       <summary>Sobre / Metodologia e limitações</summary>
@@ -125,6 +160,7 @@
   <script src="js/playback.js"></script>
   <script src="js/stats-panel.js"></script>
   <script src="js/dist-chart.js"></script>
+  <script src="js/gallery.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
