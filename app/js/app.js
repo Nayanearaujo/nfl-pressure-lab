@@ -8,6 +8,7 @@
 
   const els = {};
   let field, playback, stats, chart;
+  let snapFrameId = null;
 
   function $(id) { return document.getElementById(id); }
 
@@ -91,6 +92,7 @@
       }
       els.emptyState.style.display = "none";
 
+      snapFrameId = doc.events && doc.events.snap ? doc.events.snap.frame : null;
       field.initPlayers(doc);
       stats.load(doc);
       chart.load(doc);
@@ -120,9 +122,37 @@
     stats.updateGeometric(frame);
     chart.setCursor(frame);
     els.slider.value = index;
+
+    // HUD de distância (Fase 4): mesmo valor do JSON, em jardas, fora do campo.
+    const d = frame.geometric_min_distance_yd;
+    if (d != null) {
+      els.hudValue.classList.remove("na");
+      els.hudValue.innerHTML = `${d.toFixed(2)} <span class="unit">yd</span>`;
+    } else {
+      els.hudValue.classList.add("na");
+      els.hudValue.textContent = "não disponível";
+    }
+
+    // Estado temporal: "Pré-snap" antes do snap (Fase 5).
+    let temporal = "";
+    if (snapFrameId != null) {
+      if (frame.frameId < snapFrameId) temporal = " · Pré-snap";
+    }
     els.frameReadout.innerHTML =
       `frame <strong>${frame.frameId}</strong> / ${playback.frameCount()}` +
+      temporal +
       (frame.event ? ` · <em>${frame.event}</em>` : "");
+  }
+
+  // ---- Alterna modo de enquadramento sem reiniciar a reprodução (Fase 2) ----
+  function setMode(mode) {
+    const pocket = mode === "pocket";
+    field.setMode(mode);                       // reenquadra usando o frame atual
+    els.field.classList.toggle("pocket", pocket);
+    els.modePocket.classList.toggle("is-active", pocket);
+    els.modeFull.classList.toggle("is-active", !pocket);
+    els.modePocket.setAttribute("aria-pressed", String(pocket));
+    els.modeFull.setAttribute("aria-pressed", String(!pocket));
   }
 
   // ---- Marcadores de evento na timeline (RF7 / requisito 4) ----
@@ -169,6 +199,8 @@
     els.slider.addEventListener("input", (e) => { playback.pause(); playback.seek(parseInt(e.target.value, 10)); });
     els.speed.addEventListener("change", (e) => playback.setSpeed(parseFloat(e.target.value)));
     els.selector.addEventListener("change", (e) => loadPlay(e.target.value));
+    els.modeFull.addEventListener("click", () => setMode("full"));
+    els.modePocket.addEventListener("click", () => setMode("pocket"));
     document.addEventListener("keydown", (e) => {
       if (e.target.tagName === "SELECT") return;
       if (e.code === "Space") { e.preventDefault(); playback.toggle(); }
@@ -180,6 +212,10 @@
   document.addEventListener("DOMContentLoaded", () => {
     els.status = $("status");
     els.selector = $("play-selector");
+    els.field = $("field");
+    els.modeFull = $("modeFull");
+    els.modePocket = $("modePocket");
+    els.hudValue = $("hud-value");
     els.btnPlay = $("btnPlay");
     els.btnPrev = $("btnPrev");
     els.btnNext = $("btnNext");

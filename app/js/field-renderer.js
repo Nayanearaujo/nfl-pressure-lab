@@ -22,6 +22,12 @@
   // Inverte Y para o SVG (tracking Y=0 fica embaixo).
   function fy(y) { return FIELD_WID - y; }
 
+  // Modo FULL FIELD (viewBox do campo inteiro).
+  const FULL_VIEWBOX = { x: 0, y: 0, w: FIELD_LEN, h: FIELD_WID };
+  // POCKET FOCUS: meia-largura da janela ao redor do QB (jardas). Mantém a
+  // proporção do campo (largura : altura = FIELD_LEN : FIELD_WID).
+  const POCKET_HALF_W = 15; // 30 jd de largura -> margem p/ ver rushers próximos
+
   function FieldRenderer(svg) {
     this.svg = svg;
     this.playerNodes = new Map();   // nflId(string) -> <circle>
@@ -30,6 +36,8 @@
     this.approachLine = null;
     this.approachLabel = null;
     this.qbId = null;
+    this.mode = "full";             // "full" | "pocket"
+    this.lastFrame = null;          // usado ao alternar de modo sem mudar frame
     this._buildField();
   }
 
@@ -76,11 +84,45 @@
     svg.appendChild(this.gBall);
     svg.appendChild(this.gLabels);
 
+    // Halo do pass rusher mais próximo (pintado sob os jogadores).
+    this.closestHalo = el("circle", { class: "closest-halo", r: 1.7, cx: -10, cy: -10, visibility: "hidden" });
+    this.gLine.appendChild(this.closestHalo);
+
     // Linha de aproximação (criada uma vez, escondida até haver dados)
     this.approachLine = el("line", { class: "approach-line", visibility: "hidden" });
     this.gLine.appendChild(this.approachLine);
+    // approachLabel mantido por compatibilidade, porém NÃO é mais desenhado
+    // sobre o campo (a distância passou a ser exibida em HUD/painel — Fase 4).
     this.approachLabel = el("text", { class: "approach-label", visibility: "hidden" });
-    this.gLabels.appendChild(this.approachLabel);
+  };
+
+  // Alterna o modo de enquadramento sem alterar o frame atual (Fase 2).
+  FieldRenderer.prototype.setMode = function (mode) {
+    this.mode = mode === "pocket" ? "pocket" : "full";
+    if (this.lastFrame) this._applyViewBox(this.lastFrame);
+  };
+
+  // Calcula e aplica o viewBox conforme o modo, centrando no QB no pocket.
+  FieldRenderer.prototype._applyViewBox = function (frame) {
+    let vb = FULL_VIEWBOX;
+    if (this.mode === "pocket") {
+      const qb = this.qbId && frame.positions ? frame.positions[this.qbId] : null;
+      if (qb && qb.x != null && qb.y != null) {
+        const aspect = FIELD_LEN / FIELD_WID;
+        const halfW = POCKET_HALF_W;
+        const halfH = halfW / aspect;      // preserva a proporção do campo
+        let x = qb.x - halfW;
+        let y = fy(qb.y) - halfH;
+        // mantém a janela dentro dos limites do campo
+        x = Math.max(0, Math.min(FIELD_LEN - halfW * 2, x));
+        y = Math.max(0, Math.min(FIELD_WID - halfH * 2, y));
+        vb = { x: x, y: y, w: halfW * 2, h: halfH * 2 };
+      }
+    }
+    this.svg.setAttribute("viewBox", `${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
+    // escala os elementos dependentes de zoom (rótulos/traços) por CSS var
+    const scale = vb.w / FIELD_LEN; // 1 no full, <1 no pocket
+    this.svg.style.setProperty("--zoom-scale", scale);
   };
 
   // Cria os elementos dos jogadores uma única vez (reusados a cada frame).
@@ -121,6 +163,7 @@
 
   // Atualiza posições para um frame (não recria nós — só move cx/cy).
   FieldRenderer.prototype.renderFrame = function (frame) {
+    this.lastFrame = frame;
     const positions = frame.positions || {};
     this.playerNodes.forEach((node, nflId) => {
       const pos = positions[nflId];
@@ -150,9 +193,12 @@
     }
 
     this._renderApproach(frame);
+    this._applyViewBox(frame);
   };
 
   // Linha QB <-> pass rusher mais próximo (somente rushers — RF6.2/P5).
+  // A distância NÃO é mais desenhada sobre o campo (Fase 4): apenas a linha e
+  // o halo do rusher mais próximo. O valor é exibido em HUD/painel.
   FieldRenderer.prototype._renderApproach = function (frame) {
     const positions = frame.positions || {};
     const qb = this.qbId ? positions[this.qbId] : null;
@@ -167,13 +213,12 @@
       this.approachLine.setAttribute("y2", fy(rusher.y));
       this.approachLine.setAttribute("visibility", "visible");
 
-      this.approachLabel.setAttribute("x", (qb.x + rusher.x) / 2);
-      this.approachLabel.setAttribute("y", fy((qb.y + rusher.y) / 2) - 0.6);
-      this.approachLabel.textContent = d.toFixed(2) + " yd";
-      this.approachLabel.setAttribute("visibility", "visible");
+      this.closestHalo.setAttribute("cx", rusher.x);
+      this.closestHalo.setAttribute("cy", fy(rusher.y));
+      this.closestHalo.setAttribute("visibility", "visible");
     } else {
       this.approachLine.setAttribute("visibility", "hidden");
-      this.approachLabel.setAttribute("visibility", "hidden");
+      this.closestHalo.setAttribute("visibility", "hidden");
     }
   };
 

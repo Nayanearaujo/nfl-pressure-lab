@@ -23,14 +23,28 @@
   <main>
     <!-- Campo + controles -->
     <section class="field-wrap">
+      <div class="field-toolbar">
+        <div class="mode-toggle" role="group" aria-label="Modo de enquadramento">
+          <button id="modeFull" class="mode-btn is-active" aria-pressed="true">Full field</button>
+          <button id="modePocket" class="mode-btn" aria-pressed="false">Pocket focus</button>
+        </div>
+      </div>
       <div id="empty-state" class="empty-state" style="display:none"></div>
-      <svg id="field" role="img" aria-label="Campo de futebol americano com jogadores"></svg>
+      <div class="field-stage">
+        <svg id="field" role="img" aria-label="Campo de futebol americano com jogadores"></svg>
+        <!-- HUD de distância (fora da concentração de jogadores — Fase 4) -->
+        <div id="dist-hud" class="dist-hud" aria-live="polite">
+          <span class="hud-label">Aproximação QB–pass rusher</span>
+          <span class="hud-value" id="hud-value">–</span>
+        </div>
+      </div>
 
       <div class="legend" aria-hidden="false">
         <span class="item"><span class="dot" style="background:var(--c-qb)"></span> Quarterback</span>
         <span class="item"><span class="dot" style="background:var(--c-offense)"></span> Ataque</span>
         <span class="item"><span class="dot" style="background:var(--c-defense)"></span> Defesa</span>
         <span class="item"><span class="dot" style="background:var(--c-rusher)"></span> Pass rusher</span>
+        <span class="item"><span class="dot dot-ring"></span> Rusher mais próximo</span>
         <span class="item"><span class="dot" style="background:var(--c-ball)"></span> Bola</span>
       </div>
 

@@ -95,6 +95,7 @@ main {
   padding: 12px;
   min-width: 0;
 }
+.field-stage { position: relative; }
 #field {
   width: 100%;
   height: auto;
@@ -103,24 +104,68 @@ main {
   background: var(--field-green);
 }
 
-/* Jogadores no SVG */
-.player { stroke: #000; stroke-width: 0.12; }
-.player.qb { fill: var(--c-qb); stroke: #7a5c00; stroke-width: 0.2; }
+/* ---------- Barra de ferramentas do campo + toggle de modo ---------- */
+.field-toolbar { display: flex; align-items: center; justify-content: flex-end; margin-bottom: 8px; }
+.mode-toggle { display: inline-flex; background: var(--bg-elev); border: 1px solid var(--border); border-radius: 999px; padding: 3px; gap: 2px; }
+.mode-btn {
+  border: none; background: transparent; color: var(--text-dim);
+  padding: 6px 14px; border-radius: 999px; font-size: 0.82rem; font-weight: 600;
+}
+.mode-btn.is-active { background: var(--accent); color: #04121f; }
+.mode-btn:hover:not(.is-active) { color: var(--text); }
+
+/* ---------- HUD de distância sobre o campo (fora da região densa) ---------- */
+.dist-hud {
+  position: absolute; top: 10px; left: 10px;
+  background: rgba(11,15,20,0.82); border: 1px solid var(--border);
+  border-left: 3px solid var(--layer-geo);
+  border-radius: 8px; padding: 6px 12px; backdrop-filter: blur(2px);
+  display: flex; flex-direction: column; gap: 1px; pointer-events: none;
+  max-width: 60%;
+}
+.dist-hud .hud-label { font-size: 0.62rem; letter-spacing: 0.4px; text-transform: uppercase; color: var(--text-dim); }
+.dist-hud .hud-value { font-size: 1.3rem; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--text); }
+.dist-hud .hud-value .unit { font-size: 0.8rem; color: var(--text-dim); font-weight: 600; }
+.dist-hud .hud-value.na { font-size: 0.9rem; font-style: italic; }
+
+/* Jogadores no SVG.
+   As larguras de traço usam vetor não-escalado para permanecerem finas e
+   consistentes em qualquer zoom (viewBox). */
+.player { stroke: #05202f; stroke-width: 1.4; vector-effect: non-scaling-stroke; }
+.player.qb { fill: var(--c-qb); stroke: #6b4e00; stroke-width: 2; }
 .player.offense { fill: var(--c-offense); }
 .player.defense { fill: var(--c-defense); }
-.player.rusher { fill: var(--c-rusher); stroke: #7a0000; stroke-width: 0.2; }
-.ball-marker { fill: var(--c-ball); stroke: #3a2410; stroke-width: 0.15; }
-.jersey-label { fill: #04121f; font-size: 1.1px; font-weight: 700; text-anchor: middle; dominant-baseline: central; pointer-events: none; }
-.approach-line { stroke: var(--c-rusher); stroke-width: 0.28; stroke-dasharray: 0.8 0.5; }
-.approach-label {
-  fill: #fff; font-size: 1.6px; font-weight: 700; text-anchor: middle;
-  paint-order: stroke; stroke: #000; stroke-width: 0.5;
+.player.rusher { fill: var(--c-rusher); stroke: #6b0000; stroke-width: 2; }
+.ball-marker { fill: var(--c-ball); stroke: #2a1908; stroke-width: 1.2; vector-effect: non-scaling-stroke; }
+
+/* Halo discreto do pass rusher mais próximo (contorno, sem esconder os demais) */
+.closest-halo {
+  fill: none; stroke: #fff; stroke-width: 2; opacity: 0.9;
+  stroke-dasharray: 3 2; vector-effect: non-scaling-stroke;
+}
+
+/* Rótulo do número da camisa. O font-size é dado em unidades de usuário do
+   SVG; para manter tamanho ~constante na tela em qualquer zoom, multiplicamos
+   pela escala do viewBox (--zoom-scale: 1 no full, <1 no pocket). */
+.jersey-label {
+  fill: #04121f; font-weight: 800; text-anchor: middle; dominant-baseline: central;
+  pointer-events: none;
+  font-size: calc(1.6px * var(--zoom-scale, 1));
+}
+/* Em FULL FIELD, a alta concentração de jogadores torna os números ilegíveis;
+   escondemos os rótulos e mantemos a identificação via tooltip (hover). */
+#field:not(.pocket) .jersey-label { display: none; }
+
+.approach-line {
+  stroke: var(--c-rusher); stroke-width: 2; stroke-dasharray: 4 3;
+  vector-effect: non-scaling-stroke; opacity: 0.95;
 }
 
 /* Legenda */
 .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; font-size: 0.8rem; color: var(--text-dim); }
 .legend .item { display: flex; align-items: center; gap: 6px; }
 .legend .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; border: 1px solid #000; }
+.legend .dot-ring { background: var(--c-rusher); border: 2px dashed #fff; box-sizing: border-box; }
 
 /* ---------- Timeline / controles ---------- */
 .controls {
@@ -212,9 +257,11 @@ details.methodology {
 details.methodology summary { cursor: pointer; font-weight: 600; color: var(--accent); }
 details.methodology .body { font-size: 0.82rem; color: var(--text-dim); margin-top: 10px; }
 details.methodology .body p { margin: 6px 0; }
+/* Aviso de ausência: acessível, porém discreto — não compete com o campo. */
 .warn-banner {
-  background: rgba(255,92,92,0.08); border: 1px solid rgba(255,92,92,0.3);
-  color: #ffb3b3; border-radius: 8px; padding: 8px 12px; font-size: 0.78rem; margin-top: 8px;
+  background: transparent; border: none; border-top: 1px solid var(--border);
+  color: var(--text-dim); border-radius: 0; padding: 8px 2px 0; font-size: 0.72rem;
+  margin-top: 10px; opacity: 0.85;
 }
 .status-bar { font-size: 0.78rem; color: var(--text-dim); padding: 4px 20px; }
 .status-bar.error { color: #ff9d9d; }
