@@ -1,0 +1,18 @@
+{
+  "datasetNote": "NFL Big Data Bowl 2023 — temporada 2021, semanas 1-8",
+  "plays": [
+    {
+      "defensiveTeam": "DAL",
+      "description": "(13:33) (Shotgun) T.Brady pass incomplete deep right to C.Godwin.",
+      "down": 3,
+      "file": "plays/2021090900_97.json",
+      "gameId": 2021090900,
+      "id": "2021090900_97",
+      "passResult": "I",
+      "playId": 97,
+      "possessionTeam": "TB",
+      "quarter": 1,
+      "yardsToGo": 2
+    }
+  ]
+}
