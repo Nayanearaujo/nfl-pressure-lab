@@ -180,6 +180,10 @@ CSVs originais (dataset NFL)
 
 A distância entre o quarterback e o pass rusher mais próximo considera exclusivamente os defensores identificados como pass rush no scouting da PFF. O cálculo é feito no pré-processamento em Python e armazenado no JSON, de forma reproduzível a partir das coordenadas.
 
+### Tratamento dos dados e .gitignore
+
+Os CSVs brutos do dataset (jogos, jogadas, scouting e o rastreamento, com centenas de MB) não são versionados neste repositório. O pré-processamento os lê a partir de uma pasta externa e grava apenas o artefato necessário à demonstração: um JSON leve por jogada em `app/data/plays/`. O `.gitignore` bloqueia os dados brutos (por exemplo `data/`, `*.csv` do dataset, e o rastreamento) e artefatos locais como ambientes virtuais e `__pycache__`, mantendo no repositório somente o código e os JSONs de demonstração. Assim, o repositório permanece pequeno e não redistribui os dados de propriedade da NFL e da PFF.
+
 ## Estrutura do projeto
 
 ```
