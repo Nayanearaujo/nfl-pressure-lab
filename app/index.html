@@ -112,25 +112,35 @@
     <h2 id="gallery-title">Visualizações complementares</h2>
     <p class="note">Imagens estáticas da mesma jogada demonstrativa (2021090900 / 97). Não são jogadas diferentes. O gráfico de distância abaixo é uma versão estática do gráfico interativo apresentado acima. Clique em uma miniatura para ampliar.</p>
     <div class="gallery" id="gallery">
-      <figure class="gcard" data-src="../docs/images/pocket-replay-fullfield.png">
+      <figure class="gcard" data-src="../docs/images/pocket-replay-fullfield.png"
+        data-title="Full field"
+        data-explain="Mostra as posições reais dos jogadores em um frame da jogada, no campo completo. As cores identificam funções: amarelo é o quarterback, azul é o ataque, laranja é a defesa e vermelho são os pass rushers; o pass rusher mais próximo recebe um contorno tracejado. A distância exibida é calculada a partir das coordenadas (x, y) dos jogadores, entre o quarterback e o pass rusher mais próximo. Observação: no frame do lançamento, o rusher mais próximo está a cerca de 1,79 jarda do quarterback.">
         <img loading="lazy" src="../docs/images/pocket-replay-fullfield.png" alt="Pocket Replay no modo Full field" />
-        <figcaption><strong>Full field</strong><span>Visão completa do campo no momento do lançamento.</span></figcaption>
+        <figcaption><strong>Full field</strong><span>Posições reais dos jogadores no campo completo, em um frame da jogada.</span></figcaption>
       </figure>
-      <figure class="gcard" data-src="../docs/images/pocket-replay-pocketfocus.png">
+      <figure class="gcard" data-src="../docs/images/pocket-replay-pocketfocus.png"
+        data-title="Pocket focus"
+        data-explain="Amplia a região do quarterback para facilitar a leitura da movimentação dos defensores próximos. O zoom altera apenas a visualização: não altera as coordenadas dos jogadores nem as distâncias calculadas. O contorno tracejado destaca o pass rusher mais próximo no frame mostrado. Observação: o enquadramento acompanha o quarterback ao longo da jogada, preservando a proporção do campo.">
         <img loading="lazy" src="../docs/images/pocket-replay-pocketfocus.png" alt="Pocket Replay no modo Pocket focus" />
-        <figcaption><strong>Pocket focus</strong><span>Recorte ampliado da região do quarterback.</span></figcaption>
+        <figcaption><strong>Pocket focus</strong><span>Recorte ampliado da região do quarterback; o zoom não altera as distâncias.</span></figcaption>
       </figure>
-      <figure class="gcard" data-src="../docs/images/distance-timeline.png">
+      <figure class="gcard" data-src="../docs/images/distance-timeline.png"
+        data-title="Linha do tempo da distância"
+        data-explain="O eixo X é o frame e o eixo Y é a distância em jardas. A curva representa a menor distância entre o quarterback e os pass rushers identificados em cada frame. As marcações: snap no frame 6 (cerca de 5,78 jardas) e lançamento no frame 40 (cerca de 1,79 jarda). A menor distância observada é 1,11 jarda, no frame 43. Observação: a menor distância ocorre depois do lançamento, não no momento da decisão de lançar. É uma versão estática do gráfico interativo apresentado acima.">
         <img loading="lazy" src="../docs/images/distance-timeline.png" alt="Linha do tempo da distância" />
-        <figcaption><strong>Linha do tempo da distância</strong><span>Versão estática do gráfico interativo acima.</span></figcaption>
+        <figcaption><strong>Linha do tempo da distância</strong><span>Distância por frame. Versão estática do gráfico interativo acima.</span></figcaption>
       </figure>
-      <figure class="gcard" data-src="../docs/images/qb-rusher-paths.png">
+      <figure class="gcard" data-src="../docs/images/qb-rusher-paths.png"
+        data-title="Posição do rusher mais próximo por frame"
+        data-explain="A linha amarela é a trajetória contínua do quarterback. Os segmentos coloridos representam a posição do pass rusher mais próximo em cada frame, e são interrompidos sempre que muda o identificador do defensor. Portanto, os segmentos não representam a trajetória contínua de um único atleta. Os marcadores indicam o snap e o lançamento. Observação: nesta jogada, o defensor mais próximo muda entre Carlos Watkins, Micah Parsons, Demarcus Lawrence e Osa Odighizuwa.">
         <img loading="lazy" src="../docs/images/qb-rusher-paths.png" alt="Posição do pass rusher mais próximo por frame" />
-        <figcaption><strong>Posição do rusher mais próximo</strong><span>Trecho por defensor; a linha quebra quando muda o defensor.</span></figcaption>
+        <figcaption><strong>Posição do rusher mais próximo</strong><span>QB contínuo; segmentos por defensor, interrompidos quando o ID muda.</span></figcaption>
       </figure>
-      <figure class="gcard" data-src="../docs/images/play-summary-card.png">
+      <figure class="gcard" data-src="../docs/images/play-summary-card.png"
+        data-title="Resumo da jogada"
+        data-explain="O cartão reúne três informações distintas e separadas: (A) a aproximação geométrica calculada a partir das coordenadas; (B) a pressão registrada pela PFF; e (C) o resultado oficial da jogada. Os 4 hurries são registros da PFF e não foram calculados a partir da distância. Observação: o passe foi incompleto, mas não se atribui esse resultado à aproximação dos defensores como relação causal demonstrada.">
         <img loading="lazy" src="../docs/images/play-summary-card.png" alt="Cartão de resumo da jogada" />
-        <figcaption><strong>Resumo da jogada</strong><span>Principais números, com as três camadas separadas.</span></figcaption>
+        <figcaption><strong>Resumo da jogada</strong><span>Três camadas separadas: aproximação geométrica, pressão PFF e resultado.</span></figcaption>
       </figure>
     </div>
   </section>
@@ -139,7 +149,10 @@
   <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Imagem ampliada" hidden>
     <button id="lightbox-close" class="lightbox-close" aria-label="Fechar">&times;</button>
     <img id="lightbox-img" src="" alt="" />
-    <div id="lightbox-caption" class="lightbox-caption"></div>
+    <div class="lightbox-info">
+      <h3 id="lightbox-title"></h3>
+      <p id="lightbox-caption" class="lightbox-caption"></p>
+    </div>
   </div>
 
   <footer>

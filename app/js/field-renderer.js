@@ -120,9 +120,24 @@
       }
     }
     this.svg.setAttribute("viewBox", `${vb.x} ${vb.y} ${vb.w} ${vb.h}`);
-    // escala os elementos dependentes de zoom (rótulos/traços) por CSS var
-    const scale = vb.w / FIELD_LEN; // 1 no full, <1 no pocket
+    // Fator de zoom: 1 no full, <1 no pocket (ex.: 0.25 => 4x de zoom).
+    // Os círculos/halo são desenhados em unidades de usuário (jardas); ao
+    // ampliar o viewBox eles apareceriam 1/scale maiores na tela. Para manter
+    // o tamanho aparente constante, multiplicamos os raios por "scale".
+    const scale = vb.w / FIELD_LEN;
     this.svg.style.setProperty("--zoom-scale", scale);
+    this._applyMarkerScale(scale);
+  };
+
+  // Reescala raios dos jogadores, bola e halo para tamanho de tela estável.
+  // NÃO altera posições (cx/cy) nem coordenadas do tracking.
+  FieldRenderer.prototype._applyMarkerScale = function (scale) {
+    this.playerNodes.forEach((node) => {
+      const base = parseFloat(node.dataset.baseR);
+      if (!isNaN(base)) node.setAttribute("r", (base * scale).toFixed(3));
+    });
+    if (this.ballNode) this.ballNode.setAttribute("r", (0.55 * scale).toFixed(3));
+    if (this.closestHalo) this.closestHalo.setAttribute("r", (1.7 * scale).toFixed(3));
   };
 
   // Cria os elementos dos jogadores uma única vez (reusados a cada frame).
@@ -142,7 +157,9 @@
       else if (p.side === "offense") cls += "offense";
       else cls += "defense";
 
-      const c = el("circle", { class: cls, r: p.isQB ? 1.25 : 1.1, cx: -10, cy: -10 });
+      const baseR = p.isQB ? 1.25 : 1.1;
+      const c = el("circle", { class: cls, r: baseR, cx: -10, cy: -10 });
+      c.dataset.baseR = baseR;
       const title = el("title", {});
       title.textContent = `${p.displayName || "?"} (#${p.jerseyNumber ?? "?"}) · ${p.position || "?"} · ${p.pffRole || "?"}`;
       c.appendChild(title);

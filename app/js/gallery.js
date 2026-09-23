@@ -9,14 +9,16 @@
     const gallery = document.getElementById("gallery");
     const box = document.getElementById("lightbox");
     const img = document.getElementById("lightbox-img");
+    const titleEl = document.getElementById("lightbox-title");
     const cap = document.getElementById("lightbox-caption");
     const closeBtn = document.getElementById("lightbox-close");
     if (!gallery || !box) return;
 
-    function open(src, caption, alt) {
+    function open(src, title, explain, alt) {
       img.src = src;
       img.alt = alt || "";
-      cap.textContent = caption || "";
+      if (titleEl) titleEl.textContent = title || "";
+      cap.textContent = explain || "";
       box.hidden = false;
     }
     function close() {
@@ -29,8 +31,13 @@
       const src = card.getAttribute("data-src");
       const im = card.querySelector("img");
       const fig = card.querySelector("figcaption");
-      const caption = fig ? fig.textContent.replace(/\s+/g, " ").trim() : "";
-      const openThis = function () { open(src, caption, im ? im.alt : ""); };
+      // título e explicação completa vêm dos data-attributes; se ausentes,
+      // recai para o texto da legenda do card.
+      const title = card.getAttribute("data-title") ||
+        (fig && fig.querySelector("strong") ? fig.querySelector("strong").textContent : "");
+      const explain = card.getAttribute("data-explain") ||
+        (fig ? fig.textContent.replace(/\s+/g, " ").trim() : "");
+      const openThis = function () { open(src, title, explain, im ? im.alt : ""); };
       card.addEventListener("click", openThis);
       card.addEventListener("keydown", function (e) {
         if (e.key === "Enter" || e.code === "Space") { e.preventDefault(); openThis(); }

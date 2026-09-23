@@ -59,7 +59,13 @@ A aplicação está funcional. Os componentes abaixo estão concluídos.
 
 ## Demonstração visual
 
-Interface do Pocket Replay 2D no modo Full field, exibindo a jogada 2021090900 / 97 (TB x DAL) no momento do lançamento. O campo mostra todos os jogadores em suas coordenadas reais, o painel lateral separa as três camadas de informação e o indicador exibe a distância atual entre o quarterback e o pass rusher mais próximo.
+Visualizações estáticas da jogada demonstrativa 2021090900 / 97 (TB x DAL). São todas a mesma jogada, em recortes e gráficos diferentes. Na aplicação, estas imagens formam a galeria "Visualizações complementares", com a explicação completa exibida ao ampliar cada imagem.
+
+Full field
+
+- O que mostra: as posições reais dos jogadores em um frame da jogada, no campo completo.
+- Como interpretar: as cores identificam funções (amarelo é o quarterback, azul é o ataque, laranja é a defesa, vermelho são os pass rushers) e o pass rusher mais próximo recebe um contorno tracejado. A distância exibida é calculada a partir das coordenadas dos jogadores.
+- Observação: no frame do lançamento, o rusher mais próximo está a cerca de 1.79 jarda do quarterback.
 
 <div align="center">
 
@@ -69,9 +75,11 @@ Interface do Pocket Replay 2D no modo Full field, exibindo a jogada 2021090900 /
 
 ### Outros visuais
 
-Modo Pocket focus
+Pocket focus
 
-Enquadramento ampliado da região do quarterback, que acompanha sua movimentação ao longo da jogada. O pass rusher mais próximo recebe um contorno tracejado, e os números das camisas ficam legíveis.
+- O que mostra: um enquadramento ampliado da região do quarterback, para facilitar a leitura da movimentação dos defensores próximos.
+- Como interpretar: o contorno tracejado destaca o pass rusher mais próximo no frame mostrado. O zoom altera apenas a visualização.
+- Observação: o zoom não altera as coordenadas dos jogadores nem as distâncias calculadas.
 
 <div align="center">
 
@@ -81,7 +89,9 @@ Enquadramento ampliado da região do quarterback, que acompanha sua movimentaç�
 
 Linha do tempo da distância
 
-Evolução da distância entre o quarterback e o pass rusher mais próximo, quadro a quadro. As linhas verticais marcam o snap (frame 6) e o lançamento (frame 40). O ponto vermelho indica a menor distância observada na jogada, 1.11 jarda no frame 43, posterior ao lançamento.
+- O que mostra: a evolução da distância ao longo da jogada. O eixo X é o frame e o eixo Y é a distância em jardas.
+- Como interpretar: a curva representa a menor distância entre o quarterback e os pass rushers identificados em cada frame. As marcações são snap no frame 6 (cerca de 5.78 jardas) e lançamento no frame 40 (cerca de 1.79 jarda); a menor distância observada é 1.11 jarda no frame 43.
+- Observação: a menor distância ocorre após o lançamento, não no momento da decisão de lançar. É uma versão estática do gráfico interativo apresentado na aplicação.
 
 <div align="center">
 
@@ -91,7 +101,9 @@ Evolução da distância entre o quarterback e o pass rusher mais próximo, quad
 
 Posição do pass rusher mais próximo por frame
 
-O quarterback aparece com trajetória contínua (linha amarela). Para a defesa, o gráfico mostra a posição do pass rusher mais próximo em cada frame. Como o defensor mais próximo muda ao longo da jogada, a linha é interrompida sempre que o identificador do defensor muda, e cada trecho é colorido pelo defensor correspondente. Portanto, os trechos coloridos não representam a trajetória de um único jogador. Os marcadores indicam o snap e o lançamento.
+- O que mostra: a trajetória contínua do quarterback (linha amarela) e a posição do pass rusher mais próximo em cada frame.
+- Como interpretar: os segmentos coloridos são interrompidos sempre que muda o identificador do defensor; portanto, não representam a trajetória contínua de um único atleta. Os marcadores indicam o snap e o lançamento.
+- Observação: nesta jogada, o defensor mais próximo muda entre Carlos Watkins, Micah Parsons, Demarcus Lawrence e Osa Odighizuwa.
 
 <div align="center">
 
@@ -101,7 +113,9 @@ O quarterback aparece com trajetória contínua (linha amarela). Para a defesa, 
 
 Cartão de resumo da jogada
 
-Resumo com os principais números da jogada, mantendo separadas a aproximação geométrica, a pressão registrada pela PFF e o resultado.
+- O que mostra: um resumo com três informações distintas e separadas, A aproximação geométrica calculada, B pressão registrada pela PFF, e C resultado oficial da jogada.
+- Como interpretar: os 4 hurries são registros da PFF e não foram calculados a partir da distância.
+- Observação: o passe foi incompleto, mas esse resultado não é atribuído à aproximação dos defensores como relação causal demonstrada.
 
 <div align="center">
 
